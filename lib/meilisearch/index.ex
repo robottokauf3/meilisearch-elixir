@@ -4,26 +4,153 @@ defmodule Meilisearch.Index do
 
   [MeiliSearch Documentation - Indexes](https://docs.meilisearch.com/references/indexes.html)
   """
-  def list(url) do
-    HTTPoison.get!("#{url}/indexes")
+
+  alias Meilisearch.HTTP
+
+  @doc """
+  List all indexes
+
+  ## Example
+
+      iex> Meilisearch.Index.list()
+      {:ok, [
+        %{
+          "createdAt" => "2020-05-23T06:20:18.394281328Z",
+          "name" => "meilisearch_test",
+          "primaryKey" => nil,
+          "uid" => "meilisearch_test",
+          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        }
+      ]}
+
+  """
+  @spec list :: HTTP.response()
+  def list do
+    HTTP.get_request("indexes")
   end
 
-  def get(url, uid) do
-    HTTPoison.get!("#{url}/indexes/#{uid}")
+  @doc """
+  Get information about an index
+
+  ## Example
+
+      iex> Meilisearch.Index.get("meilisearch_test")
+      {:ok,
+        %{
+          "createdAt" => "2020-05-23T06:20:18.394281328Z",
+          "name" => "meilisearch_test",
+          "primaryKey" => nil,
+          "uid" => "meilisearch_test",
+          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        }
+      }
+
+  """
+  @spec get(String.t()) :: HTTP.response()
+  def get(uid) do
+    HTTP.get_request("indexes/#{uid}")
   end
 
-  def create(url, uid, opts \\ []) do
-    body =
-      %{uid: uid}
-      |> Jason.encode!()
+  @doc """
+  Create an index
 
-    HTTPoison.post!("#{url}/indexes", body)
+  `primary_key` can be passed as an option.
+
+  ## Examples
+
+      iex> Meilisearch.Index.create("meilisearch_test")
+      {:ok,
+        %{
+          "createdAt" => "2020-05-23T06:20:18.394281328Z",
+          "name" => "meilisearch_test",
+          "primaryKey" => nil,
+          "uid" => "meilisearch_test",
+          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        }
+      }
+
+      iex> Meilisearch.create("meilisearch_test", primary_key: "key_name")
+      {:ok,
+        %{
+          "createdAt" => "2020-05-23T06:20:18.394281328Z",
+          "name" => "meilisearch_test",
+          "primaryKey" => "key_name",
+          "uid" => "meilisearch_test",
+          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        }
+      }
+  """
+  @spec create(String.t(), Keyword.t()) :: HTTP.response()
+  def create(uid, opts \\ []) do
+    body = %{
+      uid: uid,
+      primaryKey: Keyword.get(opts, :primary_key)
+    }
+
+    HTTP.post_request("indexes", body)
   end
 
-  def update(url, uid, opts \\ []) do
+  @doc """
+  Update an index with new primary key.  Will fail if primary key has already been set
+
+  `primary_key` option is required.
+
+  ## Examples
+
+      iex> Meilisearch.Index.update("meilisearch_test", primary_key: "new_key")
+      {:ok,
+        %{
+          "primaryKey" => "new_primary_key",
+          "createdAt" => "2020-05-25T04:30:10.681720067Z",
+          "name" => "meilisearch_test",
+          "uid" => "meilisearch_test",
+          "updatedAt" => "2020-05-25T04:30:10.685540577Z"
+        }
+      }
+  """
+  @spec update(String.t(), primary_key: String.t()) :: HTTP.response()
+  def update(uid, opts \\ []) do
+    with {:ok, primary_key} <- Keyword.fetch(opts, :primary_key),
+         body <- %{primaryKey: primary_key} do
+      HTTP.put_request("indexes/#{uid}", body)
+    else
+      _ -> {:error, "primary_key is required"}
+    end
   end
 
-  def delete(url, uid) do
-    HTTPoison.delete!("#{url}/indexes/#{uid}")
+  @doc """
+  Delete an index
+
+  ## Examples
+
+      iex> Meilisearch.Index.delete("meilisearch_test")
+      {:ok, nil}
+
+      iex> Meilisearch.delete("nonexistent_index")
+      {:error, 404, Index meilisearch_test not found"}
+  """
+  @spec delete(String.t()) :: HTTP.response()
+  def delete(uid) do
+    HTTP.delete_request("indexes/#{uid}")
+  end
+
+  @doc """
+  Check if index exists
+
+  ## Examples
+
+      iex> Meilisearch.Index.exists?("meilisearch_test")
+      {:ok, true}
+
+      iex> Meilisearch.Index.exists?("nonexistent_index")
+      {:ok, false}
+  """
+  @spec exists?(String.t()) :: {:ok, true | false} | {:error, String.t()}
+  def exists?(uid) do
+    case get(uid) do
+      {:ok, _} -> {:ok, true}
+      {:error, 404, _} -> {:ok, false}
+      _ -> {:error, "Unknown error has occured"}
+    end
   end
 end
