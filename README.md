@@ -1,6 +1,10 @@
 # MeiliSearch Elixir
 
-[Meilisearch](https://docs.meilisearch.com/) client for Elixir.
+![Tests](https://github.com/robottokauf3/meilisearch-elixir/workflows/Tests/badge.svg)
+
+A lightweight [Meilisearch](https://docs.meilisearch.com/) client for Elixir.
+
+**Note: This is a work in progress and has not been published to hex.pm.  You probably shouldn't use it for production at this point.**
 
 ## Installation
 
@@ -15,6 +19,47 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/meilisearch_elixir](https://hexdocs.pm/meilisearch).
+## Usage
+
+```elixir
+# Create Index
+Meilisearch.Index.create("index_name")
+
+# Create Index and set primary key
+Meilisearch.Index.create("index_name", primary_key: "key_name")
+```
+
+### Available Modules
+
+- [X] Index
+- [X] Health
+- [X] Stats
+- [X] Version
+- [ ] Documents
+- [ ] Search
+- [ ] Updates
+- [ ] Keys
+- [ ] Settings
+- [ ] System Information
+
+## Config
+
+Setting endpoint and API key used by the library:
+
+```elixir
+config :meilisearch,
+  endpoint: "http://127.0.0.1:7700",
+  api_key: "test_api_key"
+```
+
+## Development
+
+You will need  Meilisearch running locally for development and testing.  You can do this via Docker:
+
+```
+$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=test_api_key
+```
+
+## License
+
+meilisearch-elixir is released under the MIT license. Please refer to [LICENSE](LICENSE) for details.
