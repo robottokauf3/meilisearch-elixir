@@ -17,6 +17,7 @@ defmodule Meilisearch.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
+      dialyzer: dialyzer(),
       description: description(),
       package: package(),
       docs: docs()
@@ -69,6 +70,13 @@ defmodule Meilisearch.MixProject do
         "README.md",
         "CHANGELOG.md"
       ]
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_core_path: "priv/plts",
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 end
