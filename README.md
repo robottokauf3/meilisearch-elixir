@@ -35,12 +35,12 @@ Meilisearch.Index.create("index_name", primary_key: "key_name")
 - [X] Health
 - [X] Stats
 - [X] Version
-- [ ] Documents
-- [ ] Search
-- [ ] Updates
-- [ ] Keys
+- [X] Documents
+- [X] Search
+- [X] Updates
+- [X] Keys
 - [ ] Settings
-- [ ] System Information
+- [X] System Information
 
 ## Config
 

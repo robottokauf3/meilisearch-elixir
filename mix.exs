@@ -1,7 +1,8 @@
 defmodule Meilisearch.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.0-beta"
+  @github_url "https://github.com/robottokauf3/meilisearch-elixir"
 
   def project do
     [
@@ -18,6 +19,7 @@ defmodule Meilisearch.MixProject do
         "coveralls.html": :test
       ],
       dialyzer: dialyzer(),
+      elixirc_paths: elixirc_paths(Mix.env()),
       description: description(),
       package: package(),
       docs: docs()
@@ -41,6 +43,9 @@ defmodule Meilisearch.MixProject do
     ]
   end
 
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   defp description() do
     """
     Lightweight Elixir client for MeiliSearch search engine.
@@ -53,9 +58,7 @@ defmodule Meilisearch.MixProject do
       maintainers: ["Rob Kaufmann"],
       licenses: ["MIT"],
       links: %{
-        "Github" => "https://github.com/robottokauf3/meilisearch-elixir",
-        "Changelog" =>
-          "https://github.com/robottokauf3/meilisearch-elixir/blob/master/CHANGELOG.md"
+        "Github" => @github_url
       }
     ]
   end
@@ -65,7 +68,7 @@ defmodule Meilisearch.MixProject do
       main: "readme",
       name: "MeiliSearch",
       source_ref: "v#{@version}",
-      source_url: "https://github.com/robottokauf3/meilisearch-elixir",
+      source_url: @github_url,
       extras: [
         "README.md",
         "CHANGELOG.md"
