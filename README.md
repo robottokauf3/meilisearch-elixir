@@ -27,6 +27,29 @@ Meilisearch.Index.create("index_name")
 
 # Create Index and set primary key
 Meilisearch.Index.create("index_name", primary_key: "key_name")
+
+# Insert documents
+documents = [
+  %{
+    "id" => 1,
+    "tagline" => "In space no one can hear you scream",
+    "title" => "Alien"
+  },
+  %{
+    "id" => 2,
+    "tagline" => "You'll never go in the water again",
+    "title" => "Jaws"
+  },
+  %{
+    "id" => 3,
+    "tagline" => "Be Afraid. Be very afraid.",
+    "title" => "The Fly"
+  }
+]
+Meilisearch.Document.add_or_replace("index_name", documents)
+
+# Search
+Meilisearch.Search.search("water")
 ```
 
 ### Available Modules
