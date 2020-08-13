@@ -14,7 +14,7 @@ defmodule Meilisearch.StatsTest do
   test "get returns stats for given index" do
     Index.create(@test_index)
 
-    assert {:ok, %{"fieldsFrequency" => _, "isIndexing" => _, "numberOfDocuments" => _}} =
+    assert {:ok, %{"fieldsDistribution" => _, "isIndexing" => _, "numberOfDocuments" => _}} =
              Stats.get(@test_index)
   end
 

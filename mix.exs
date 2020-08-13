@@ -54,7 +54,7 @@ defmodule Meilisearch.MixProject do
 
   defp package() do
     [
-      files: [],
+      files: ["lib", "mix.exs", "README.md"],
       maintainers: ["Rob Kaufmann"],
       licenses: ["MIT"],
       links: %{

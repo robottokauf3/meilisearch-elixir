@@ -14,6 +14,7 @@ jobs:
       matrix:
         elixir: [1.10.3]
         otp: [22.3.4]
+        meilisearch: [0.11.1, 0.12.0]
 
     steps:
       - uses: actions/checkout@v2
@@ -45,7 +46,7 @@ jobs:
         run: mix credo
 
       - name: Meilisearch Docker setup
-        run: docker run -d -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=test_api_key --no-analytics=true
+        run: docker run -d -p 7700:7700 getmeili/meilisearch:v${{ matrix.meilisearch }} ./meilisearch --master-key=test_api_key --no-analytics=true
 
       - name: Run Tests
         run: mix test
