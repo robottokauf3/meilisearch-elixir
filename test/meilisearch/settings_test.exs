@@ -20,22 +20,13 @@ defmodule Meilisearch.SettingsTest do
   test "Settings.get" do
     {:ok, settings} = Settings.get(@test_index)
 
-    assert settings == %{
-             "rankingRules" => [
-               "typo",
-               "words",
-               "proximity",
-               "attribute",
-               "wordsPosition",
-               "exactness"
-             ],
-             "attributesForFaceting" => [],
-             "displayedAttributes" => ["*"],
-             "distinctAttribute" => nil,
-             "searchableAttributes" => ["*"],
-             "stopWords" => [],
-             "synonyms" => %{}
-           }
+    assert Map.has_key?(settings, "rankingRules")
+    assert Map.has_key?(settings, "attributesForFaceting")
+    assert Map.has_key?(settings, "displayedAttributes")
+    assert Map.has_key?(settings, "distinctAttribute")
+    assert Map.has_key?(settings, "searchableAttributes")
+    assert Map.has_key?(settings, "stopWords")
+    assert Map.has_key?(settings, "synonyms")
   end
 
   test "Settings.update" do
