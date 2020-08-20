@@ -62,7 +62,7 @@ Meilisearch.Search.search("water")
 - [X] Search
 - [X] Updates
 - [X] Keys
-- [ ] Settings
+- [X] Settings
 - [X] System Information
 
 ## Config
