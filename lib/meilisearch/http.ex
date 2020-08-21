@@ -60,7 +60,6 @@ defmodule Meilisearch.HTTP do
   end
 
   def process_request_body(""), do: ""
-  def process_request_body(body) when is_binary(body), do: body
   def process_request_body(body), do: Jason.encode!(body)
 
   def process_request_headers(headers) do
