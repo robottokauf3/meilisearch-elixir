@@ -13,13 +13,15 @@ defmodule Meilisearch.SettingsTest do
   @searchable_attributes ["title"]
   @displayed_attributes ["title"]
 
-  setup_all do
+  setup do
     Index.delete(@test_index)
     Index.create(@test_index)
 
     on_exit(fn ->
       Index.delete(@test_index)
     end)
+
+    :timer.sleep(100)
 
     :ok
   end
