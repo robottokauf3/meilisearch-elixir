@@ -39,7 +39,8 @@ defmodule Meilisearch.MixProject do
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev]},
       {:excoveralls, "~> 0.10.0", only: [:test]},
-      {:ex_doc, "~> 0.21", only: [:dev], runtime: false}
+      {:ex_doc, "~> 0.21", only: [:dev], runtime: false},
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false}
     ]
   end
 

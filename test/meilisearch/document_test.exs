@@ -11,13 +11,15 @@ defmodule Meilisearch.DocumentTest do
     tagline: "In space no one can hear you scream"
   }
 
-  setup_all do
+  setup do
     Index.delete(@test_index)
     Index.create(@test_index)
 
     on_exit(fn ->
       Index.delete(@test_index)
     end)
+
+    :timer.sleep(100)
 
     :ok
   end
@@ -36,18 +38,28 @@ defmodule Meilisearch.DocumentTest do
     wait_for_update(@test_index, Map.get(update, "updateId"))
   end
 
-  test "Document.get" do
-    {:ok, document} = Document.get(@test_index, 1)
-    assert Map.get(document, "id") == 1
-    assert Map.get(document, "title") == "Alien"
-    assert Map.get(document, "tagline") == "In space no one can hear you scream"
-  end
+  describe "existing document" do
+    setup do
+      Document.add_or_replace(@test_index, @test_document)
 
-  test "Document.list" do
-    {:ok, [document | _]} = Document.list(@test_index)
+      :timer.sleep(100)
 
-    assert Map.get(document, "id") == 1
-    assert Map.get(document, "title") == "Alien"
-    assert Map.get(document, "tagline") == "In space no one can hear you scream"
+      :ok
+    end
+
+    test "Document.get" do
+      {:ok, document} = Document.get(@test_index, 1)
+      assert Map.get(document, "id") == 1
+      assert Map.get(document, "title") == "Alien"
+      assert Map.get(document, "tagline") == "In space no one can hear you scream"
+    end
+
+    test "Document.list" do
+      {:ok, [document | _]} = Document.list(@test_index)
+
+      assert Map.get(document, "id") == 1
+      assert Map.get(document, "title") == "Alien"
+      assert Map.get(document, "tagline") == "In space no one can hear you scream"
+    end
   end
 end
