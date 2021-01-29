@@ -26,21 +26,6 @@ defmodule Meilisearch.Health do
   end
 
   @doc """
-  Update the health of Meilisearch instance
-
-  ## Example
-
-      iex> Meilisearch.Health.update(false)
-      {:ok, nil}
-  """
-  @spec update(any) :: HTTP.response()
-  def update(health) do
-    data = %{health: health}
-
-    HTTP.put_request("health", data)
-  end
-
-  @doc """
   Retrieve the health of the instance as a boolean value
 
   ## Example
