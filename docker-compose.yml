@@ -1,0 +1,10 @@
+version: "3"
+services:
+  meilisearch-0.18.1:
+    image: "getmeili/meilisearch:v0.18.1"
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_NO_SENTRY=true
+      - MEILI_MASTER_KEY=test_api_key
