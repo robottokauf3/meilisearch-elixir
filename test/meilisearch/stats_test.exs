@@ -20,6 +20,6 @@ defmodule Meilisearch.StatsTest do
 
   test "get_all returns stats for all indexes" do
     Index.create(@test_index)
-    assert {:ok, %{"databaseSize" => _, "indexes" => %{@test_index => _}}} = Stats.get_all()
+    assert {:ok, %{"databaseSize" => _, "indexes" => %{@test_index => _}}} = Stats.list()
   end
 end

@@ -26,7 +26,7 @@ defmodule Meilisearch.Stats do
 
   ## Example
 
-      iex> Meilisearch.Stats.get_all()
+      iex> Meilisearch.Stats.list()
       {:ok,
         %{
           "databaseSize" => 143360,
@@ -42,8 +42,8 @@ defmodule Meilisearch.Stats do
       }
 
   """
-  @spec get_all :: HTTP.response()
-  def get_all do
+  @spec list :: HTTP.response()
+  def list do
     HTTP.get_request("stats")
   end
 end
