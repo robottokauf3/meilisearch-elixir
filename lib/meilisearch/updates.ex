@@ -1,4 +1,4 @@
-defmodule Meilisearch.Update do
+defmodule Meilisearch.Updates do
   @moduledoc """
   Collection of functions used to get information about the progress of updates.
 
@@ -11,7 +11,7 @@ defmodule Meilisearch.Update do
   Get the status of individual update for given index.
 
   ## Example
-      iex> Meilisearch.Update.get("meilisearch_test", 1)
+      iex> Meilisearch.Updates.get("meilisearch_test", 1)
       {:ok,
         %{
           "duration" => 0.013233943,
@@ -32,7 +32,7 @@ defmodule Meilisearch.Update do
   Get the status of all updates for given index.
 
   ## Example
-      iex> Meilisearch.Update.list("meilisearch_test")
+      iex> Meilisearch.Updates.list("meilisearch_test")
       {:ok,
       [
         %{

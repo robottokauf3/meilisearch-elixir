@@ -1,6 +1,6 @@
-defmodule Meilisearch.UpdateTest do
+defmodule Meilisearch.UpdatesTest do
   use ExUnit.Case
-  alias Meilisearch.{Documents, Index, Update}
+  alias Meilisearch.{Documents, Index, Updates}
 
   @test_index Application.get_env(:meilisearch, :test_index)
   @test_document %{
@@ -20,9 +20,9 @@ defmodule Meilisearch.UpdateTest do
     :ok
   end
 
-  describe "Update.get" do
+  describe "Updates.get" do
     test "returns error, 404 with invalid update id" do
-      {:error, status_code, message} = Update.get(@test_index, 10_071_982)
+      {:error, status_code, message} = Updates.get(@test_index, 10_071_982)
 
       assert status_code == 404
       assert is_binary(message)
@@ -37,13 +37,13 @@ defmodule Meilisearch.UpdateTest do
                 "status" => _,
                 "type" => _,
                 "updateId" => _
-              }} = Update.get(@test_index, update_id)
+              }} = Updates.get(@test_index, update_id)
     end
   end
 
-  test "Update.list returns list of updates" do
+  test "Updates.list returns list of updates" do
     Documents.add_or_replace(@test_index, [@test_document])
-    {:ok, [update | _]} = Update.list(@test_index)
+    {:ok, [update | _]} = Updates.list(@test_index)
 
     assert %{
              "enqueuedAt" => _,
