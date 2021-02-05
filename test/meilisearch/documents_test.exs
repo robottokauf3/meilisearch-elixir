@@ -1,8 +1,8 @@
-defmodule Meilisearch.DocumentTest do
+defmodule Meilisearch.DocumentsTest do
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Document, Index}
+  alias Meilisearch.{Documents, Index}
 
   @test_index Application.get_env(:meilisearch, :test_index)
   @test_document %{
@@ -24,15 +24,15 @@ defmodule Meilisearch.DocumentTest do
     :ok
   end
 
-  test "Document.add_or_replace" do
-    {:ok, update} = Document.add_or_replace(@test_index, @test_document)
+  test "Documents.add_or_replace" do
+    {:ok, update} = Documents.add_or_replace(@test_index, @test_document)
     assert Map.has_key?(update, "updateId")
 
     wait_for_update(@test_index, Map.get(update, "updateId"))
   end
 
-  test "Document.add_or_update" do
-    {:ok, update} = Document.add_or_update(@test_index, @test_document)
+  test "Documents.add_or_update" do
+    {:ok, update} = Documents.add_or_update(@test_index, @test_document)
     assert Map.has_key?(update, "updateId")
 
     wait_for_update(@test_index, Map.get(update, "updateId"))
@@ -40,22 +40,22 @@ defmodule Meilisearch.DocumentTest do
 
   describe "existing document" do
     setup do
-      Document.add_or_replace(@test_index, @test_document)
+      Documents.add_or_replace(@test_index, @test_document)
 
       :timer.sleep(100)
 
       :ok
     end
 
-    test "Document.get" do
-      {:ok, document} = Document.get(@test_index, 1)
+    test "Documents.get" do
+      {:ok, document} = Documents.get(@test_index, 1)
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"
       assert Map.get(document, "tagline") == "In space no one can hear you scream"
     end
 
-    test "Document.list" do
-      {:ok, [document | _]} = Document.list(@test_index)
+    test "Documents.list" do
+      {:ok, [document | _]} = Documents.list(@test_index)
 
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"

@@ -1,6 +1,6 @@
 defmodule Meilisearch.UpdateTest do
   use ExUnit.Case
-  alias Meilisearch.{Document, Index, Update}
+  alias Meilisearch.{Documents, Index, Update}
 
   @test_index Application.get_env(:meilisearch, :test_index)
   @test_document %{
@@ -29,7 +29,7 @@ defmodule Meilisearch.UpdateTest do
     end
 
     test "returns update status" do
-      {:ok, %{"updateId" => update_id}} = Document.add_or_replace(@test_index, [@test_document])
+      {:ok, %{"updateId" => update_id}} = Documents.add_or_replace(@test_index, [@test_document])
 
       assert {:ok,
               %{
@@ -42,7 +42,7 @@ defmodule Meilisearch.UpdateTest do
   end
 
   test "Update.list returns list of updates" do
-    Document.add_or_replace(@test_index, [@test_document])
+    Documents.add_or_replace(@test_index, [@test_document])
     {:ok, [update | _]} = Update.list(@test_index)
 
     assert %{
