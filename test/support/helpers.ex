@@ -1,14 +1,14 @@
 defmodule Support.Helpers do
   @moduledoc false
 
-  alias Meilisearch.{Index, Updates}
+  alias Meilisearch.{Indexes, Updates}
 
   def delete_all_indexes do
-    {:ok, indexes} = Index.list()
+    {:ok, indexes} = Indexes.list()
 
     indexes
     |> Enum.map(fn %{"uid" => uid} -> uid end)
-    |> Enum.map(&Index.delete/1)
+    |> Enum.map(&Indexes.delete/1)
   end
 
   def wait_for_update(index_uid, update_id) do

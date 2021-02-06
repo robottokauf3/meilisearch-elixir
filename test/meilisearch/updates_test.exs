@@ -1,6 +1,6 @@
 defmodule Meilisearch.UpdatesTest do
   use ExUnit.Case
-  alias Meilisearch.{Documents, Index, Updates}
+  alias Meilisearch.{Documents, Indexes, Updates}
 
   @test_index Application.get_env(:meilisearch, :test_index)
   @test_document %{
@@ -10,11 +10,11 @@ defmodule Meilisearch.UpdatesTest do
   }
 
   setup_all do
-    Index.delete(@test_index)
-    Index.create(@test_index)
+    Indexes.delete(@test_index)
+    Indexes.create(@test_index)
 
     on_exit(fn ->
-      Index.delete(@test_index)
+      Indexes.delete(@test_index)
     end)
 
     :ok

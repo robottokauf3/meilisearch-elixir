@@ -1,4 +1,4 @@
-defmodule Meilisearch.Index do
+defmodule Meilisearch.Indexes do
   @moduledoc """
   Collection of functions used to manage indexes.
 
@@ -12,7 +12,7 @@ defmodule Meilisearch.Index do
 
   ## Example
 
-      iex> Meilisearch.Index.list()
+      iex> Meilisearch.Indexes.list()
       {:ok, [
         %{
           "createdAt" => "2020-05-23T06:20:18.394281328Z",
@@ -34,7 +34,7 @@ defmodule Meilisearch.Index do
 
   ## Example
 
-      iex> Meilisearch.Index.get("meilisearch_test")
+      iex> Meilisearch.Indexes.get("meilisearch_test")
       {:ok,
         %{
           "createdAt" => "2020-05-23T06:20:18.394281328Z",
@@ -58,7 +58,7 @@ defmodule Meilisearch.Index do
 
   ## Examples
 
-      iex> Meilisearch.Index.create("meilisearch_test")
+      iex> Meilisearch.Indexes.create("meilisearch_test")
       {:ok,
         %{
           "createdAt" => "2020-05-23T06:20:18.394281328Z",
@@ -97,7 +97,7 @@ defmodule Meilisearch.Index do
 
   ## Examples
 
-      iex> Meilisearch.Index.update("meilisearch_test", primary_key: "new_key")
+      iex> Meilisearch.Indexes.update("meilisearch_test", primary_key: "new_key")
       {:ok,
         %{
           "primaryKey" => "new_primary_key",
@@ -123,7 +123,7 @@ defmodule Meilisearch.Index do
 
   ## Examples
 
-      iex> Meilisearch.Index.delete("meilisearch_test")
+      iex> Meilisearch.Indexes.delete("meilisearch_test")
       {:ok, nil}
 
       iex> Meilisearch.delete("nonexistent_index")
@@ -139,10 +139,10 @@ defmodule Meilisearch.Index do
 
   ## Examples
 
-      iex> Meilisearch.Index.exists?("meilisearch_test")
+      iex> Meilisearch.Indexes.exists?("meilisearch_test")
       {:ok, true}
 
-      iex> Meilisearch.Index.exists?("nonexistent_index")
+      iex> Meilisearch.Indexes.exists?("nonexistent_index")
       {:ok, false}
   """
   @spec exists?(String.t()) :: {:ok, true | false} | {:error, String.t()}

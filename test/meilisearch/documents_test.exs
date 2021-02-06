@@ -2,7 +2,7 @@ defmodule Meilisearch.DocumentsTest do
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Documents, Index}
+  alias Meilisearch.{Documents, Indexes}
 
   @test_index Application.get_env(:meilisearch, :test_index)
   @test_document %{
@@ -12,11 +12,11 @@ defmodule Meilisearch.DocumentsTest do
   }
 
   setup do
-    Index.delete(@test_index)
-    Index.create(@test_index)
+    Indexes.delete(@test_index)
+    Indexes.create(@test_index)
 
     on_exit(fn ->
-      Index.delete(@test_index)
+      Indexes.delete(@test_index)
     end)
 
     :timer.sleep(100)
