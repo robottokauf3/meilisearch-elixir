@@ -9,6 +9,8 @@ defmodule Meilisearch.Search do
   @doc """
   Search for documents matching a specific query in the given index.
 
+  A `search_query` value of `nil` will send a placeholder query.
+
   ## Options
 
     * `offset` 	Number of documents to skip.  Defaults to `0`
@@ -46,10 +48,14 @@ defmodule Meilisearch.Search do
         "query" => "nothing will match"
       }}
   """
-  @spec search(String.t(), String.t(), Keyword.t()) :: HTTP.response()
+  @spec search(String.t(), String.t() | nil, Keyword.t()) :: HTTP.response()
   def search(uid, search_query, opts \\ []) do
-    opts = [params: [{:q, search_query} | opts]]
+    params =
+      case search_query do
+        nil -> opts
+        q -> [{:q, q} | opts]
+      end
 
-    HTTP.get_request("indexes/#{uid}/search", [], opts)
+    HTTP.get_request("indexes/#{uid}/search", [], params: params)
   end
 end
