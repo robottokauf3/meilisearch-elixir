@@ -4,7 +4,7 @@ defmodule Meilisearch.DocumentsTest do
   import Support.Helpers
   alias Meilisearch.{Documents, Indexes}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
   @test_document %{
     id: 1,
     title: "Alien",

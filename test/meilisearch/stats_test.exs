@@ -3,7 +3,7 @@ defmodule Meilisearch.StatsTest do
 
   alias Meilisearch.{Indexes, Stats}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
 
   setup do
     Indexes.delete(@test_index)

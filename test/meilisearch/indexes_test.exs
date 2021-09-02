@@ -2,7 +2,7 @@ defmodule Meilisearch.IndexTest do
   use ExUnit.Case
   alias Meilisearch.Indexes
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
 
   setup do
     Indexes.delete(@test_index)

@@ -4,8 +4,8 @@ defmodule Meilisearch.HealthTest do
   alias Meilisearch.Health
 
   describe "Health.get" do
-    test "returns `{:ok, nil}` when instance is healthy" do
-      assert {:ok, nil} = Health.get()
+    test "returns `{:ok, _}` when instance is healthy" do
+      assert {:ok, _} = Health.get()
     end
   end
 

@@ -3,7 +3,7 @@ defmodule Meilisearch.SearchTest do
 
   alias Meilisearch.{Documents, Indexes, Search}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
   @test_documents [
     %{
       id: 1,

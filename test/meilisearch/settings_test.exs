@@ -4,7 +4,7 @@ defmodule Meilisearch.SettingsTest do
   import Support.Helpers
   alias Meilisearch.{Indexes, Settings}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
   @synonyms %{alien: ["ufo"]}
   @stop_words ["the", "of", "to"]
   @ranking_rules ["typo", "words", "proximity", "attribute"]

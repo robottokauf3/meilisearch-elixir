@@ -2,7 +2,7 @@ defmodule Meilisearch.UpdatesTest do
   use ExUnit.Case
   alias Meilisearch.{Documents, Indexes, Updates}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
   @test_document %{
     id: 100,
     title: "The Thing",
