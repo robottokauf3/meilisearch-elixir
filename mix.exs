@@ -1,7 +1,7 @@
 defmodule Meilisearch.MixProject do
   use Mix.Project
 
-  @version "0.1.0-beta"
+  @version "0.20.0"
   @github_url "https://github.com/robottokauf3/meilisearch-elixir"
 
   def project do
@@ -34,13 +34,13 @@ defmodule Meilisearch.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.6"},
+      {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev]},
-      {:excoveralls, "~> 0.10.0", only: [:test]},
-      {:ex_doc, "~> 0.21", only: [:dev], runtime: false},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false}
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.14.0", only: [:test]},
+      {:ex_doc, "~> 0.25", only: [:dev], runtime: false},
+      {:mix_test_watch, "~> 1.1", only: :dev, runtime: false}
     ]
   end
 

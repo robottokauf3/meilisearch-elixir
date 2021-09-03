@@ -3,9 +3,9 @@ ExUnit.start()
 %{
   host: host,
   port: port
-} = URI.parse(Application.get_env(:meilisearch, :endpoint))
+} = URI.parse(Meilisearch.Config.endpoint())
 
-case :gen_tcp.connect(to_charlist(host), 7700, []) do
+case :gen_tcp.connect(to_charlist(host), port, []) do
   {:ok, socket} -> :gen_tcp.close(socket)
   _ -> Mix.raise("Cannot connect to Meilisearch instance at #{host}:#{port}")
 end

@@ -4,8 +4,6 @@ defmodule Meilisearch.HTTP do
   """
   use HTTPoison.Base
 
-  @default_endpoint "http://127.0.0.1:7700"
-
   @type path :: String.t()
 
   @type success :: {:ok, any()}
@@ -52,7 +50,7 @@ defmodule Meilisearch.HTTP do
   end
 
   def process_url(path) do
-    base_url = Application.get_env(:meilisearch, :endpoint, @default_endpoint)
+    base_url = Meilisearch.Config.endpoint()
 
     base_url
     |> URI.merge(path)
@@ -89,7 +87,7 @@ defmodule Meilisearch.HTTP do
   end
 
   defp add_auth_header(headers) do
-    api_key = Application.get_env(:meilisearch, :api_key, "")
+    api_key = Meilisearch.Config.api_key()
 
     [{"X-Meili-API-Key", api_key} | headers]
   end

@@ -2,9 +2,9 @@ defmodule Meilisearch.SettingsTest do
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Index, Settings}
+  alias Meilisearch.{Indexes, Settings}
 
-  @test_index Application.get_env(:meilisearch, :test_index)
+  @test_index Meilisearch.Config.get(:test_index)
   @synonyms %{alien: ["ufo"]}
   @stop_words ["the", "of", "to"]
   @ranking_rules ["typo", "words", "proximity", "attribute"]
@@ -14,11 +14,11 @@ defmodule Meilisearch.SettingsTest do
   @displayed_attributes ["title"]
 
   setup do
-    Index.delete(@test_index)
-    Index.create(@test_index)
+    Indexes.delete(@test_index)
+    Indexes.create(@test_index)
 
     on_exit(fn ->
-      Index.delete(@test_index)
+      Indexes.delete(@test_index)
     end)
 
     :timer.sleep(100)

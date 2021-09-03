@@ -1,9 +1,8 @@
 name: Tests
 
 on:
-  push:
-    branches: [master]
   pull_request:
+  push:
     branches: [master]
 
 jobs:
@@ -12,15 +11,15 @@ jobs:
 
     strategy:
       matrix:
-        elixir: [1.10.3]
-        otp: [22.3.4]
-        meilisearch: [0.13.0]
+        elixir: [1.12.2]
+        otp: [24.0]
+        meilisearch: [0.17.0, 0.18.1, 0.19.0, 0.20.0]
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup elixir
-        uses: actions/setup-elixir@v1
+        uses: erlef/setup-elixir@v1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}

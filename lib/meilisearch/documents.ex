@@ -1,4 +1,4 @@
-defmodule Meilisearch.Document do
+defmodule Meilisearch.Documents do
   @moduledoc """
   Collection of functions used to manage documents.
 
@@ -12,7 +12,7 @@ defmodule Meilisearch.Document do
 
   ## Example
 
-      iex> Meilisearch.Document.get("meilisearch_test", 1)
+      iex> Meilisearch.Documents.get("meilisearch_test", 1)
       {:ok,
       %{
         "id" => 1,
@@ -35,7 +35,7 @@ defmodule Meilisearch.Document do
 
   ## Examples
 
-      iex> Meilisearch.Document.list("meilisearch_test")
+      iex> Meilisearch.Documents.list("meilisearch_test")
       {:ok,
         [
           %{
@@ -51,7 +51,7 @@ defmodule Meilisearch.Document do
         ]
       }
 
-      iex> Meilisearch.Document.get("meilisearch_test", limit: 2, offset: 4)
+      iex> Meilisearch.Documents.get("meilisearch_test", limit: 2, offset: 4)
       {:ok,
         [
           %{
@@ -79,14 +79,14 @@ defmodule Meilisearch.Document do
 
   ## Examples
 
-      iex> Meilisearch.Document.add_or_replace("meilisearch_test", %{
+      iex> Meilisearch.Documents.add_or_replace("meilisearch_test", %{
         "id" => 2,
         "tagline" => "You'll never go in the water again",
         "title" => "Jaws"
       })
       {:ok, %{"updateId" => 1}}
 
-      iex> Meilisearch.Document.add_or_replace(
+      iex> Meilisearch.Documents.add_or_replace(
         "meilisearch_test",
         [
           %{
@@ -122,14 +122,14 @@ defmodule Meilisearch.Document do
 
   ## Examples
 
-      iex> Meilisearch.Document.add_or_update("meilisearch_test", %{
+      iex> Meilisearch.Documents.add_or_update("meilisearch_test", %{
         "id" => 2,
         "tagline" => "You'll never go in the water again",
         "title" => "Jaws"
       })
       {:ok, %{"updateId" => 1}}
 
-      iex> Meilisearch.Document.add_or_update(
+      iex> Meilisearch.Documents.add_or_update(
         "meilisearch_test",
         [
           %{
@@ -162,10 +162,10 @@ defmodule Meilisearch.Document do
 
   ## Example
 
-      iex> Meilisearch.Document.delete("meilisearch_test", 1)
+      iex> Meilisearch.Documents.delete("meilisearch_test", 1)
       {:ok, %{"updateId" => 0}}
 
-      iex> Meilisearch.Document.delete("meilisearch_test", [1,2,3,4])
+      iex> Meilisearch.Documents.delete("meilisearch_test", [1,2,3,4])
       {:ok, %{"updateId" => 0}}
   """
 
@@ -183,7 +183,7 @@ defmodule Meilisearch.Document do
 
   ## Example
 
-      iex> Meilisearch.Document.delete_all("meilisearch_test")
+      iex> Meilisearch.Documents.delete_all("meilisearch_test")
       {:ok, %{"updateId" => 0}}
 
   """

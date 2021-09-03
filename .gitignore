@@ -9,5 +9,6 @@ erl_crash.dump
 /config/*.secret.exs
 .elixir_ls/
 /data.ms
-/priv/plts
+priv/plts/*
+!priv/plts/.gitkeep
 .vscode
