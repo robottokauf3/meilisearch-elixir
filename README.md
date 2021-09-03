@@ -4,8 +4,6 @@
 
 A lightweight [Meilisearch](https://docs.meilisearch.com/) client for Elixir.
 
-**Note: This is a work in progress and has not been published to hex.pm.  You probably shouldn't use it for production at this point.**
-
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
@@ -14,7 +12,7 @@ by adding `meilisearch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:meilisearch, "~> 0.1.0"}
+    {:meilisearch, "~> 0.20.0"}
   ]
 end
 ```
@@ -67,13 +65,32 @@ Meilisearch.Search.search("water")
 
 ## Config
 
-Setting endpoint and API key used by the library:
+Client settings can be configured in your application config or with environment variables.
+
+*Note: environment variables will override values in the application config.*
+
+### Application Config
 
 ```elixir
 config :meilisearch,
   endpoint: "http://127.0.0.1:7700",
   api_key: "test_api_key"
 ```
+
+### Environment Variables
+
+```shell
+MEILISEARCH_ENDPOINT=http://localhost:7700 mix test
+MEILISEARCH_API_KEY=test_api_key mix test
+```
+
+## Compatibility
+
+The 0.20.X versions of this client have been tested against the following versions of Meilisearch:
+  - v0.20.0
+  - v0.19.0
+  - v0.18.1
+  - v0.17.0
 
 ## Development
 
