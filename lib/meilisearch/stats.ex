@@ -9,11 +9,23 @@ defmodule Meilisearch.Stats do
 
   @doc """
   Get stats for given index
+  ([ref.](https://docs.meilisearch.com/reference/api/stats.html#get-stats-of-an-index))
 
   ## Example
 
-      iex> Meilisearch.Stats.get("meilisearch_test")
-      {:ok, %{"fieldsFrequency" => %{}, "isIndexing" => false, "numberOfDocuments" => 0}}
+      iex> Meilisearch.Stats.get("movies")
+      {:ok,
+      %{
+        "numberOfDocuments" => 19654,
+        "isIndexing" => false,
+        "fieldDistribution" => %{
+          "poster" => 19654,
+          "release_date" => 19654,
+          "title" => 19654,
+          "id" => 19654,
+          "overview" => 19654
+        }
+      }}
 
   """
   @spec get(String.t()) :: HTTP.response()
@@ -23,23 +35,38 @@ defmodule Meilisearch.Stats do
 
   @doc """
   Get stats for all indexes
+  ([ref.](https://docs.meilisearch.com/reference/api/stats.html#get-stats-of-all-indexes))
 
   ## Example
 
       iex> Meilisearch.Stats.list()
       {:ok,
-        %{
-          "databaseSize" => 143360,
-          "indexes" => %{
-            "meilisearch_test" => %{
-              "fieldsFrequency" => %{},
-              "isIndexing" => false,
-              "numberOfDocuments" => 0
+      %{
+        "databaseSize" => 447819776,
+        "lastUpdate" => "2019-11-15T11:15:22.092896Z",
+        "indexes" => %{
+          "movies" => %{
+            "numberOfDocuments" => 19654,
+            "isIndexing" => false,
+            "fieldDistribution" => {
+              "poster" => 19654,
+              "overview" => 19654,
+              "title" => 19654,
+              "id" => 19654,
+              "release_date" => 19654
             }
           },
-          "lastUpdate" => "2020-05-09T05:39:01.222761213Z"
+          "rangemovies" => %{
+            "numberOfDocuments" => 19654,
+            "isIndexing" => false,
+            "fieldDistribution" => %{
+              "overview" => 19654,
+              "id" => 19654,
+              "title" => 19654
+            }
+          }
         }
-      }
+      }}
 
   """
   @spec list :: HTTP.response()

@@ -8,13 +8,14 @@ defmodule Meilisearch.Health do
   alias Meilisearch.HTTP
 
   @doc """
-  Get the health of Meilisearch instance
+  Get the health of Meilisearch instance.
+  ([ref.](https://docs.meilisearch.com/reference/api/health.html#get-health))
 
   ## Example
 
       # Healthy
       iex> Meilisearch.Health.get()
-      {:ok, nil}
+      {:ok, %{"status" => "available"}}
 
       # Unhealthy
       iex> Meilisearch.Health.get()
@@ -26,7 +27,7 @@ defmodule Meilisearch.Health do
   end
 
   @doc """
-  Retrieve the health of the instance as a boolean value
+  Retrieve the health of the instance as a boolean value.
 
   ## Example
 
@@ -36,7 +37,7 @@ defmodule Meilisearch.Health do
   @spec healthy? :: boolean
   def healthy? do
     case get() do
-      {:ok, _} -> true
+      {:ok, %{"status" => "available"}} -> true
       _ -> false
     end
   end

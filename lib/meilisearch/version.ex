@@ -9,11 +9,16 @@ defmodule Meilisearch.Version do
 
   @doc """
   Gets version information
+  ([ref.](https://docs.meilisearch.com/reference/api/version.html#get-version-of-meilisearch))
 
   ## Example
 
       iex> Meilisearch.Version.get()
-      {:ok, %{"buildDate" => "2020-04-29T09:05:31.455410849+00:00", "commitSha" => "UNKNOWN", "pkgVersion" => "0.10.1"}}
+      {:ok, %{
+        "commitSha" => "b46889b5f0f2f8b91438a08a358ba8f05fc09fc1",
+        "commitDate" => "2019-11-15T09:51:54.278247+00:00",
+        "pkgVersion" => "0.1.1"
+      }}
 
   """
   @spec get :: HTTP.response()

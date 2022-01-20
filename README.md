@@ -12,7 +12,7 @@ by adding `meilisearch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:meilisearch, "~> 0.20.0"}
+    {:meilisearch, "~> 0.25.2"}
   ]
 end
 ```
@@ -58,7 +58,7 @@ Meilisearch.Search.search("water")
 - [X] Version
 - [X] Documents
 - [X] Search
-- [X] Updates
+- [X] Tasks
 - [X] Keys
 - [X] Settings
 - [X] System Information
@@ -86,19 +86,20 @@ MEILISEARCH_API_KEY=test_api_key mix test
 
 ## Compatibility
 
-The 0.20.X versions of this client have been tested against the following versions of Meilisearch:
-  - v0.20.0
-  - v0.19.0
-  - v0.18.1
-  - v0.17.0
+The 0.25.X versions of this client have been tested against the following versions of Meilisearch:
+  - v0.25.2
+  - v0.25.1
+  - v0.25.0
 
 ## Development
 
-You will need  Meilisearch running locally for development and testing.  You can do this via Docker:
+You will need  Meilisearch running locally for development and testing. You can do this via Docker:
 
 ```
 $ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=test_api_key
 ```
+
+Or using the provided devcontainer configuration.
 
 ## License
 

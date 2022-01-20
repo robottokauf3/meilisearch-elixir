@@ -2,20 +2,22 @@ defmodule Meilisearch.SettingsTest do
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Indexes, Settings}
+  alias Meilisearch.{Indexes, Settings, Tasks}
 
   @test_index Meilisearch.Config.get(:test_index)
   @synonyms %{alien: ["ufo"]}
   @stop_words ["the", "of", "to"]
   @ranking_rules ["typo", "words", "proximity", "attribute"]
-  @attributes_for_faceting ["title"]
   @distinct_attribute "id"
   @searchable_attributes ["title"]
+  @filterable_attributes ["title"]
+  @sortable_attributes ["title"]
   @displayed_attributes ["title"]
 
   setup do
     Indexes.delete(@test_index)
-    Indexes.create(@test_index)
+    {:ok, task} = Indexes.create(@test_index)
+    wait_for_task(task)
 
     on_exit(fn ->
       Indexes.delete(@test_index)
@@ -27,29 +29,30 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.get" do
-    {:ok, settings} = Settings.get(@test_index)
-
-    assert Map.has_key?(settings, "rankingRules")
-    assert Map.has_key?(settings, "attributesForFaceting")
-    assert Map.has_key?(settings, "displayedAttributes")
-    assert Map.has_key?(settings, "distinctAttribute")
-    assert Map.has_key?(settings, "searchableAttributes")
-    assert Map.has_key?(settings, "stopWords")
-    assert Map.has_key?(settings, "synonyms")
+    assert {:ok,
+            %{
+              "rankingRules" => _,
+              "filterableAttributes" => _,
+              "distinctAttribute" => _,
+              "searchableAttributes" => _,
+              "displayedAttributes" => _,
+              "stopWords" => _,
+              "synonyms" => _
+            }} = Settings.get(@test_index)
   end
 
   test "Settings.update" do
-    {:ok, update} = Settings.update(@test_index, %{synonyms: @synonyms})
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.update(@test_index, %{synonyms: @synonyms})
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.reset" do
-    {:ok, update} = Settings.reset(@test_index)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.reset(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.get_synonyms" do
@@ -58,17 +61,17 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_synonyms" do
-    {:ok, update} = Settings.update_synonyms(@test_index, @synonyms)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.update_synonyms(@test_index, @synonyms)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.reset_synonyms" do
-    {:ok, update} = Settings.reset_synonyms(@test_index)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.reset_synonyms(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.get_stop_words" do
@@ -77,139 +80,177 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_stop_words" do
-    {:ok, update} = Settings.update_stop_words(@test_index, @stop_words)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.update_stop_words(@test_index, @stop_words)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.reset_stop_words" do
-    {:ok, update} = Settings.reset_stop_words(@test_index)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.reset_stop_words(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
   end
 
   test "Settings.get_ranking_rules" do
-    {:ok, ranking_rules} = Settings.get_ranking_rules(@test_index)
-
-    assert ranking_rules == [
-             "typo",
-             "words",
-             "proximity",
-             "attribute",
-             "wordsPosition",
-             "exactness"
-           ]
+    assert {:ok,
+            [
+              "words",
+              "typo",
+              "proximity",
+              "attribute",
+              "sort",
+              "exactness"
+            ]} = Settings.get_ranking_rules(@test_index)
   end
 
   test "Settings.update_ranking_rules" do
-    {:ok, update} = Settings.update_ranking_rules(@test_index, @ranking_rules)
-    assert Map.has_key?(update, "updateId")
+    assert wait_for_task_success(Settings.update_ranking_rules(@test_index, @ranking_rules))
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok,
+            [
+              "typo",
+              "words",
+              "proximity",
+              "attribute"
+            ]} = Settings.get_ranking_rules(@test_index)
   end
 
   test "Settings.reset_ranking_rules" do
-    {:ok, update} = Settings.reset_ranking_rules(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert wait_for_task_success(Settings.reset_ranking_rules(@test_index))
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
-  end
-
-  test "Settings.get_attributes_for_faceting" do
-    {:ok, attributes_for_faceting} = Settings.get_attributes_for_faceting(@test_index)
-    assert attributes_for_faceting == []
-  end
-
-  test "Settings.update_attributes_for_faceting" do
-    {:ok, update} =
-      Settings.update_attributes_for_faceting(
-        @test_index,
-        @attributes_for_faceting
-      )
-
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
-  end
-
-  test "Settings.reset_attributes_for_faceting" do
-    {:ok, update} = Settings.reset_attributes_for_faceting(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok,
+            [
+              "words",
+              "typo",
+              "proximity",
+              "attribute",
+              "sort",
+              "exactness"
+            ]} = Settings.get_ranking_rules(@test_index)
   end
 
   test "Settings.get_distinct_attribute" do
-    {:ok, distinct_attribute} = Settings.get_distinct_attribute(@test_index)
-    assert distinct_attribute == nil
+    assert {:ok, nil} = Settings.get_distinct_attribute(@test_index)
   end
 
   test "Settings.update_distinct_attribute" do
-    {:ok, update} =
+    {:ok, task} =
       Settings.update_distinct_attribute(
         @test_index,
         @distinct_attribute
       )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, "id"} = Settings.get_distinct_attribute(@test_index)
   end
 
   test "Settings.reset_distinct_attribute" do
-    {:ok, update} = Settings.reset_distinct_attribute(@test_index)
-    assert Map.has_key?(update, "updateId")
+    Settings.update_distinct_attribute(@test_index, @distinct_attribute)
+    {:ok, task} = Settings.reset_distinct_attribute(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, nil} = Settings.get_distinct_attribute(@test_index)
   end
 
   test "Settings.get_searchable_attributes" do
-    {:ok, searchable_attributes} = Settings.get_searchable_attributes(@test_index)
-    assert searchable_attributes == ["*"]
+    assert {:ok, ["*"]} = Settings.get_searchable_attributes(@test_index)
   end
 
   test "Settings.update_searchable_attributes" do
-    {:ok, update} =
+    {:ok, task} =
       Settings.update_searchable_attributes(
         @test_index,
         @searchable_attributes
       )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["title"]} = Settings.get_searchable_attributes(@test_index)
   end
 
   test "Settings.reset_searchable_attributes" do
-    {:ok, update} = Settings.reset_searchable_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Settings.reset_searchable_attributes(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["*"]} = Settings.get_searchable_attributes(@test_index)
   end
 
   test "Settings.get_displayed_attributes" do
-    {:ok, displayed_attributes} = Settings.get_displayed_attributes(@test_index)
-    assert displayed_attributes == ["*"]
+    assert {:ok, ["*"]} = Settings.get_displayed_attributes(@test_index)
   end
 
   test "Settings.update_displayed_attributes" do
-    {:ok, update} =
+    {:ok, task} =
       Settings.update_displayed_attributes(
         @test_index,
         @displayed_attributes
       )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["title"]} = Settings.get_displayed_attributes(@test_index)
   end
 
   test "Settings.reset_displayed_attributes" do
-    {:ok, update} = Settings.reset_displayed_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
+    Settings.update_displayed_attributes(@test_index, @displayed_attributes)
+    {:ok, task} = Settings.reset_displayed_attributes(@test_index)
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["*"]} = Settings.get_displayed_attributes(@test_index)
+  end
+
+  test "Settings.get_sortable_attributes" do
+    assert {:ok, []} = Settings.get_sortable_attributes(@test_index)
+  end
+
+  test "Settings.update_sortable_attributes" do
+    {:ok, task} =
+      Settings.update_sortable_attributes(
+        @test_index,
+        @sortable_attributes
+      )
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["title"]} = Settings.get_sortable_attributes(@test_index)
+  end
+
+  test "Settings.reset_sortable_attributes" do
+    Settings.update_sortable_attributes(@test_index, @sortable_attributes)
+    {:ok, task} = Settings.reset_sortable_attributes(@test_index)
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, []} = Settings.get_sortable_attributes(@test_index)
+  end
+
+  test "Settings.get_filterable_attributes" do
+    assert {:ok, []} = Settings.get_filterable_attributes(@test_index)
+  end
+
+  test "Settings.update_filterable_attributes" do
+    {:ok, task} =
+      Settings.update_filterable_attributes(
+        @test_index,
+        @filterable_attributes
+      )
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, ["title"]} = Settings.get_filterable_attributes(@test_index)
+  end
+
+  test "Settings.reset_filterable_attributes" do
+    {:ok, task} = Settings.reset_filterable_attributes(@test_index)
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, []} = Settings.get_filterable_attributes(@test_index)
   end
 end

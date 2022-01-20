@@ -1,0 +1,13 @@
+{
+	"name": "meilisearch-elixir",
+	"service": "lib",
+	"remoteUser": "dev",
+	"dockerComposeFile": "docker-compose.yml",
+	"workspaceFolder": "/workspace",
+	"forwardPorts": [7700],
+	"extensions": [
+		"jakebecker.elixir-ls",
+		"ckolkman.vscode-postgres",
+		"benvp.vscode-hex-pm-intellisense"
+	]
+}

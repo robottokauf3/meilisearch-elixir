@@ -1,7 +1,7 @@
 defmodule Meilisearch.MixProject do
   use Mix.Project
 
-  @version "0.20.0"
+  @version "0.25.0"
   @github_url "https://github.com/robottokauf3/meilisearch-elixir"
 
   def project do
@@ -70,10 +70,7 @@ defmodule Meilisearch.MixProject do
       name: "MeiliSearch",
       source_ref: "v#{@version}",
       source_url: @github_url,
-      extras: [
-        "README.md",
-        "CHANGELOG.md"
-      ]
+      extras: ["README.md"]
     ]
   end
 

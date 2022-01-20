@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  lib:
+    build:
+      context: .
+      dockerfile: dockerfile
+    volumes:
+      - ..:/workspace:cached
+    command: /bin/bash -c "while sleep 1000; do :; done"  
+    network_mode: service:search
+
+  search:
+    image: getmeili/meilisearch
+    restart: always
+    environment:
+      MEILI_MASTER_KEY: "test_api_key"
