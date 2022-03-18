@@ -42,7 +42,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update("meilisearch_test", %{synonyms: %{alien: ["ufo"]}})
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update(String.t(), any()) :: HTTP.response()
   def update(index_uid, settings \\ %{}) do
@@ -55,7 +55,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset(String.t()) :: HTTP.response()
   def reset(index_uid) do
@@ -81,7 +81,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update_synonyms("meilisearch_test", %{alien: ["ufo"]})
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_synonyms(String.t(), any()) :: HTTP.response()
   def update_synonyms(index_uid, synonyms) do
@@ -94,7 +94,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_synonyms("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_synonyms(String.t()) :: HTTP.response()
   def reset_synonyms(index_uid) do
@@ -120,7 +120,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update_stop_words("meilisearch_test", ["the", "of", "to"])
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_stop_words(String.t(), list(String.t())) :: HTTP.response()
   def update_stop_words(index_uid, stop_words) do
@@ -133,7 +133,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_stop_words("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_stop_words(String.t()) :: HTTP.response()
   def reset_stop_words(index_uid) do
@@ -170,7 +170,7 @@ defmodule Meilisearch.Settings do
         "meilisearch_test",
         ["typo", "words", "proximity", "attribute"]
       )
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_ranking_rules(String.t(), list(String.t())) :: HTTP.response()
   def update_ranking_rules(index_uid, ranking_rules) do
@@ -183,7 +183,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_ranking_rules("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_ranking_rules(String.t()) :: HTTP.response()
   def reset_ranking_rules(index_uid) do
@@ -195,12 +195,12 @@ defmodule Meilisearch.Settings do
 
   ## Example
 
-      iex> Meilisearch.Settings.get_attributes_for_faceting("meilisearch_test")
+      iex> Meilisearch.Settings.get_filterable_attributes("meilisearch_test")
       {:ok, []}
   """
-  @spec get_attributes_for_faceting(String.t()) :: HTTP.response()
-  def get_attributes_for_faceting(index_uid) do
-    HTTP.get_request("indexes/#{index_uid}/settings/attributes-for-faceting")
+  @spec get_filterable_attributes(String.t()) :: HTTP.response()
+  def get_filterable_attributes(index_uid) do
+    HTTP.get_request("indexes/#{index_uid}/settings/filterable-attributes")
   end
 
   @doc """
@@ -208,17 +208,17 @@ defmodule Meilisearch.Settings do
 
   ## Example
 
-      iex> Meilisearch.Settings.update_attributes_for_faceting(
+      iex> Meilisearch.Settings.update_filterable_attributes(
         "meilisearch_test",
         ["title"]
       )
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
-  @spec update_attributes_for_faceting(String.t(), list(String.t())) :: HTTP.response()
-  def update_attributes_for_faceting(index_uid, attributes_for_faceting) do
+  @spec update_filterable_attributes(String.t(), list(String.t())) :: HTTP.response()
+  def update_filterable_attributes(index_uid, filterable_attributes) do
     HTTP.post_request(
-      "indexes/#{index_uid}/settings/attributes-for-faceting",
-      attributes_for_faceting
+      "indexes/#{index_uid}/settings/filterable-attributes",
+      filterable_attributes
     )
   end
 
@@ -227,12 +227,12 @@ defmodule Meilisearch.Settings do
 
   ## Example
 
-      iex> Meilisearch.Settings.reset_attributes_for_faceting("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      iex> Meilisearch.Settings.reset_filterable_attributes("meilisearch_test")
+      {:ok, %{"uid" => 1}}
   """
-  @spec reset_attributes_for_faceting(String.t()) :: HTTP.response()
-  def reset_attributes_for_faceting(index_uid) do
-    HTTP.delete_request("indexes/#{index_uid}/settings/attributes-for-faceting")
+  @spec reset_filterable_attributes(String.t()) :: HTTP.response()
+  def reset_filterable_attributes(index_uid) do
+    HTTP.delete_request("indexes/#{index_uid}/settings/filterable-attributes")
   end
 
   @doc """
@@ -254,7 +254,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update_distinct_attribute("meilisearch_test", "id")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_distinct_attribute(String.t(), String.t()) :: HTTP.response()
   def update_distinct_attribute(index_uid, distinct_attribute) do
@@ -270,7 +270,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_distinct_attribute("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_distinct_attribute(String.t()) :: HTTP.response()
   def reset_distinct_attribute(index_uid) do
@@ -296,7 +296,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update_searchable_attributes("meilisearch_test", ["title"])
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_searchable_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_searchable_attributes(index_uid, searchable_attributes) do
@@ -312,7 +312,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_searchable_attributes("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_searchable_attributes(String.t()) :: HTTP.response()
   def reset_searchable_attributes(index_uid) do
@@ -338,7 +338,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update_displayed_attributes("meilisearch_test", ["title"])
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec update_displayed_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_displayed_attributes(index_uid, displayed_attributes) do
@@ -354,7 +354,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.reset_displayed_attributes("meilisearch_test")
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"uid" => 1}}
   """
   @spec reset_displayed_attributes(String.t()) :: HTTP.response()
   def reset_displayed_attributes(index_uid) do

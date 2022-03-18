@@ -21,10 +21,10 @@ end
 
 ```elixir
 # Create Index
-Meilisearch.Index.create("index_name")
+Meilisearch.Indexes.create("index_name")
 
 # Create Index and set primary key
-Meilisearch.Index.create("index_name", primary_key: "key_name")
+Meilisearch.Indexes.create("index_name", primary_key: "key_name")
 
 # Insert documents
 documents = [
@@ -44,10 +44,10 @@ documents = [
     "title" => "The Fly"
   }
 ]
-Meilisearch.Document.add_or_replace("index_name", documents)
+Meilisearch.Documents.add_or_replace("index_name", documents)
 
 # Search
-Meilisearch.Search.search("water")
+Meilisearch.Searches.search("water")
 ```
 
 ### Available Modules
@@ -58,7 +58,7 @@ Meilisearch.Search.search("water")
 - [X] Version
 - [X] Documents
 - [X] Search
-- [X] Updates
+- [X] Tasks
 - [X] Keys
 - [X] Settings
 - [X] System Information

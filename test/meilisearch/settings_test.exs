@@ -1,14 +1,14 @@
 defmodule Meilisearch.SettingsTest do
   use ExUnit.Case
 
-  import Support.Helpers
+  import Meilisearch.Wait
   alias Meilisearch.{Indexes, Settings}
 
   @test_index Meilisearch.Config.get(:test_index)
   @synonyms %{alien: ["ufo"]}
   @stop_words ["the", "of", "to"]
   @ranking_rules ["typo", "words", "proximity", "attribute"]
-  @attributes_for_faceting ["title"]
+  @filterable_attributes ["title"]
   @distinct_attribute "id"
   @searchable_attributes ["title"]
   @displayed_attributes ["title"]
@@ -30,7 +30,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, settings} = Settings.get(@test_index)
 
     assert Map.has_key?(settings, "rankingRules")
-    assert Map.has_key?(settings, "attributesForFaceting")
+    assert Map.has_key?(settings, "filterableAttributes")
     assert Map.has_key?(settings, "displayedAttributes")
     assert Map.has_key?(settings, "distinctAttribute")
     assert Map.has_key?(settings, "searchableAttributes")
@@ -39,17 +39,13 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update" do
-    {:ok, update} = Settings.update(@test_index, %{synonyms: @synonyms})
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.update(@test_index, %{synonyms: @synonyms})
+    wait(uid)
   end
 
   test "Settings.reset" do
-    {:ok, update} = Settings.reset(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_synonyms" do
@@ -58,17 +54,13 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_synonyms" do
-    {:ok, update} = Settings.update_synonyms(@test_index, @synonyms)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    {:ok, %{"uid" => uid}} = Settings.update_synonyms(@test_index, @synonyms)
+    wait(uid)
   end
 
   test "Settings.reset_synonyms" do
-    {:ok, update} = Settings.reset_synonyms(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_synonyms(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_stop_words" do
@@ -77,68 +69,49 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_stop_words" do
-    {:ok, update} = Settings.update_stop_words(@test_index, @stop_words)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.update_stop_words(@test_index, @stop_words)
+    wait(uid)
   end
 
   test "Settings.reset_stop_words" do
-    {:ok, update} = Settings.reset_stop_words(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_stop_words(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_ranking_rules" do
     {:ok, ranking_rules} = Settings.get_ranking_rules(@test_index)
 
-    assert ranking_rules == [
-             "typo",
-             "words",
-             "proximity",
-             "attribute",
-             "wordsPosition",
-             "exactness"
-           ]
+    assert ranking_rules == ["words", "typo", "proximity", "attribute", "sort", "exactness"]
   end
 
   test "Settings.update_ranking_rules" do
-    {:ok, update} = Settings.update_ranking_rules(@test_index, @ranking_rules)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.update_ranking_rules(@test_index, @ranking_rules)
+    wait(uid)
   end
 
   test "Settings.reset_ranking_rules" do
-    {:ok, update} = Settings.reset_ranking_rules(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_ranking_rules(@test_index)
+    wait(uid)
   end
 
-  test "Settings.get_attributes_for_faceting" do
-    {:ok, attributes_for_faceting} = Settings.get_attributes_for_faceting(@test_index)
-    assert attributes_for_faceting == []
+  test "Settings.get_filterable_attributes" do
+    {:ok, filterable_attributes} = Settings.get_filterable_attributes(@test_index)
+    assert filterable_attributes == []
   end
 
-  test "Settings.update_attributes_for_faceting" do
-    {:ok, update} =
-      Settings.update_attributes_for_faceting(
+  test "Settings.update_filterable_attributes" do
+    {:ok, %{"uid" => uid}} =
+      Settings.update_filterable_attributes(
         @test_index,
-        @attributes_for_faceting
+        @filterable_attributes
       )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait(uid)
   end
 
-  test "Settings.reset_attributes_for_faceting" do
-    {:ok, update} = Settings.reset_attributes_for_faceting(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+  test "Settings.reset_filterable_attributes" do
+    assert {:ok, %{"uid" => uid}} = Settings.reset_filterable_attributes(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_distinct_attribute" do
@@ -147,22 +120,18 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_distinct_attribute" do
-    {:ok, update} =
-      Settings.update_distinct_attribute(
-        @test_index,
-        @distinct_attribute
-      )
+    assert {:ok, %{"uid" => uid}} =
+             Settings.update_distinct_attribute(
+               @test_index,
+               @distinct_attribute
+             )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait(uid)
   end
 
   test "Settings.reset_distinct_attribute" do
-    {:ok, update} = Settings.reset_distinct_attribute(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_distinct_attribute(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_searchable_attributes" do
@@ -171,22 +140,18 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_searchable_attributes" do
-    {:ok, update} =
-      Settings.update_searchable_attributes(
-        @test_index,
-        @searchable_attributes
-      )
+    assert {:ok, %{"uid" => uid}} =
+             Settings.update_searchable_attributes(
+               @test_index,
+               @searchable_attributes
+             )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait(uid)
   end
 
   test "Settings.reset_searchable_attributes" do
-    {:ok, update} = Settings.reset_searchable_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_searchable_attributes(@test_index)
+    wait(uid)
   end
 
   test "Settings.get_displayed_attributes" do
@@ -195,21 +160,17 @@ defmodule Meilisearch.SettingsTest do
   end
 
   test "Settings.update_displayed_attributes" do
-    {:ok, update} =
-      Settings.update_displayed_attributes(
-        @test_index,
-        @displayed_attributes
-      )
+    assert {:ok, %{"uid" => uid}} =
+             Settings.update_displayed_attributes(
+               @test_index,
+               @displayed_attributes
+             )
 
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait(uid)
   end
 
   test "Settings.reset_displayed_attributes" do
-    {:ok, update} = Settings.reset_displayed_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => uid}} = Settings.reset_displayed_attributes(@test_index)
+    wait(uid)
   end
 end

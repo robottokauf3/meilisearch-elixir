@@ -3,12 +3,8 @@ defmodule Meilisearch.KeysTest do
   alias Meilisearch.Keys
 
   test "Keys.get returns public and private keys" do
-    assert {
-             :ok,
-             %{
-               "private" => _,
-               "public" => _
-             }
-           } = Keys.get()
+    assert {:ok, %{"results" => keys}} = Keys.get()
+    assert Enum.find(keys, & Map.get(&1, "actions") == ["search"])
+    assert Enum.find(keys, & Map.get(&1, "actions") == ["*"])
   end
 end
