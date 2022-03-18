@@ -89,6 +89,6 @@ defmodule Meilisearch.HTTP do
   defp add_auth_header(headers) do
     api_key = Meilisearch.Config.api_key()
 
-    [{"X-Meili-API-Key", api_key} | headers]
+    [{"Authorization", "Bearer " <> api_key} | headers]
   end
 end

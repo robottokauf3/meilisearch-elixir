@@ -1,7 +1,7 @@
 defmodule Meilisearch.DocumentsTest do
   use ExUnit.Case
 
-  import Support.Helpers
+  import Meilisearch.Wait
   alias Meilisearch.{Documents, Indexes}
 
   @test_index Meilisearch.Config.get(:test_index)
@@ -25,25 +25,18 @@ defmodule Meilisearch.DocumentsTest do
   end
 
   test "Documents.add_or_replace" do
-    {:ok, update} = Documents.add_or_replace(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => _}} = result = Documents.add_or_replace(@test_index, @test_document)
+    wait(result)
   end
 
   test "Documents.add_or_update" do
-    {:ok, update} = Documents.add_or_update(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert {:ok, %{"uid" => _}} = result = Documents.add_or_update(@test_index, @test_document)
+    wait(result)
   end
 
   describe "existing document" do
     setup do
-      Documents.add_or_replace(@test_index, @test_document)
-
-      :timer.sleep(100)
-
+      Documents.add_or_replace(@test_index, @test_document) |> wait()
       :ok
     end
 
