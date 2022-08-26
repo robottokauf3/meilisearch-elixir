@@ -4,7 +4,7 @@ defmodule Support.Helpers do
   alias Meilisearch.{Indexes, Updates}
 
   def delete_all_indexes do
-    {:ok, indexes} = Indexes.list()
+    {:ok, %{ "results" => indexes }} = Indexes.list()
 
     indexes
     |> Enum.map(fn %{"uid" => uid} -> uid end)
