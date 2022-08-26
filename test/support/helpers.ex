@@ -4,18 +4,18 @@ defmodule Support.Helpers do
   alias Meilisearch.{Indexes, Updates}
 
   def delete_all_indexes do
-    {:ok, %{ "results" => indexes }} = Indexes.list()
+    {:ok, indexes} = Indexes.list()
 
     indexes
     |> Enum.map(fn %{"uid" => uid} -> uid end)
     |> Enum.map(&Indexes.delete/1)
   end
 
-  def wait_for_update(index_uid, update_id) do
-    case Updates.get(index_uid, update_id) do
+  def wait_for_update(update_id) do
+    case Updates.get(update_id) do
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
-        wait_for_update(index_uid, update_id)
+        wait_for_update(update_id)
 
       _ ->
         :timer.sleep(500)

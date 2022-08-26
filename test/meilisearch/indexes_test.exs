@@ -1,6 +1,7 @@
 defmodule Meilisearch.IndexTest do
   use ExUnit.Case
   alias Meilisearch.Indexes
+  import Support.Helpers, only: [{:wait_for_update, 1}]
 
   @test_index Meilisearch.Config.get(:test_index)
 
@@ -16,10 +17,12 @@ defmodule Meilisearch.IndexTest do
     end
 
     test "returns list of existing indexes" do
-      Indexes.create(@test_index)
+      {:ok, %{ "taskUid" => update_id }} = Indexes.create(@test_index)
+
+      wait_for_update(update_id)
 
       assert {:ok, [index]} = Indexes.list()
-      assert %{"name" => @test_index, "uid" => @test_index, "primaryKey" => nil} = index
+      assert %{"createdAt" => _, "updatedAt" => _, "uid" => @test_index, "primaryKey" => nil} = index
     end
   end
 
