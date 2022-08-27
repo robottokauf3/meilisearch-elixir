@@ -1,6 +1,6 @@
-defmodule Meilisearch.UpdatesTest do
+defmodule Meilisearch.TasksTest do
   use ExUnit.Case
-  alias Meilisearch.{Documents, Indexes, Updates}
+  alias Meilisearch.{Documents, Indexes, Tasks}
 
   @test_index Meilisearch.Config.get(:test_index)
   @test_document %{
@@ -22,34 +22,34 @@ defmodule Meilisearch.UpdatesTest do
 
   describe "Updates.get" do
     test "returns error, 404 with invalid update id" do
-      {:error, status_code, message} = Updates.get(@test_index, 10_071_982)
+      {:error, status_code, message} = Tasks.get(10_071_982)
 
       assert status_code == 404
       assert is_binary(message)
     end
 
     test "returns update status" do
-      {:ok, %{"updateId" => update_id}} = Documents.add_or_replace(@test_index, [@test_document])
+      {:ok, %{"taskUid" => task_id}} = Documents.add_or_replace(@test_index, [@test_document])
 
       assert {:ok,
               %{
                 "enqueuedAt" => _,
                 "status" => _,
                 "type" => _,
-                "updateId" => _
-              }} = Updates.get(@test_index, update_id)
+                "uid" => _
+              }} = Tasks.get(task_id)
     end
   end
 
   test "Updates.list returns list of updates" do
     Documents.add_or_replace(@test_index, [@test_document])
-    {:ok, [update | _]} = Updates.list(@test_index)
+    {:ok, [update | _]} = Tasks.list(@test_index)
 
     assert %{
              "enqueuedAt" => _,
              "status" => _,
              "type" => _,
-             "updateId" => _
+             "uid" => _
            } = update
   end
 end

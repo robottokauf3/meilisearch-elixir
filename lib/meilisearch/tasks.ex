@@ -1,17 +1,17 @@
-defmodule Meilisearch.Updates do
+defmodule Meilisearch.Tasks do
   @moduledoc """
-  Collection of functions used to get information about the progress of updates.
+  Collection of functions used to get information about the progress of enqueued tasks.
 
-  [MeiliSearch Documentation - Updates](https://docs.meilisearch.com/references/updates.html)
+  [MeiliSearch Documentation - Updates](https://docs.meilisearch.com/references/tasks.html)
   """
 
   alias Meilisearch.HTTP
 
   @doc """
-  Get the status of individual update.
+  Get the status of individual task.
 
   ## Example
-      iex> Meilisearch.Updates.get(1)
+      iex> Meilisearch.Tasks.get(1)
       {:ok,
         %{
           "uid" => 1,
@@ -30,12 +30,12 @@ defmodule Meilisearch.Updates do
       }
   """
   @spec get(String.t() | integer) :: HTTP.response()
-  def get(update_id) do
-    HTTP.get_request("tasks/#{update_id}")
+  def get(task_id) do
+    HTTP.get_request("tasks/#{task_id}")
   end
 
   @doc """
-  Get the status of all updates.
+  Get the status of all tasks.
 
   ## Example
       iex> Meilisearch.Updates.list()
@@ -74,16 +74,16 @@ defmodule Meilisearch.Updates do
   @spec list() :: HTTP.response()
   def list() do
     case HTTP.get_request("tasks") do
-      {:ok, %{ "results" => updates }} -> {:ok, updates}
+      {:ok, %{ "results" => tasks }} -> {:ok, tasks}
       error -> error
     end
   end
 
   @doc """
-  Get the status of all updates for a given index.
+  Get the status of all tasks for a given index.
 
   ## Example
-      iex> Meilisearch.Updates.list(index_uid)
+      iex> Meilisearch.Tasks.list(index_uid)
       {:ok,
         [
           %{
@@ -119,7 +119,7 @@ defmodule Meilisearch.Updates do
   @spec list(String.t) :: HTTP.response()
   def list(index_uid) do
     case HTTP.get_request("tasks?indexUid=#{index_uid}") do
-      {:ok, %{ "results" => updates }} -> {:ok, updates}
+      {:ok, %{ "results" => tasks }} -> {:ok, tasks}
       error -> error
     end
   end
