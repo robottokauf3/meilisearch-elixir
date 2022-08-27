@@ -5,7 +5,7 @@ defmodule Meilisearch.HealthTest do
 
   describe "Health.get" do
     test "returns `{:ok, _}` when instance is healthy" do
-      assert {:ok, _} = Health.get()
+      assert {:ok, %{ "status" => "available" }} = Health.get()
     end
   end
 
