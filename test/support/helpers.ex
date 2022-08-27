@@ -1,7 +1,7 @@
 defmodule Support.Helpers do
   @moduledoc false
 
-  alias Meilisearch.{Indexes, Updates}
+  alias Meilisearch.{Indexes, Tasks}
 
   def delete_all_indexes do
     {:ok, indexes} = Indexes.list()
@@ -12,7 +12,7 @@ defmodule Support.Helpers do
   end
 
   def wait_for_update(update_id) do
-    case Updates.get(update_id) do
+    case Tasks.get(update_id) do
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
         wait_for_update(update_id)

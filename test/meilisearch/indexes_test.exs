@@ -1,6 +1,6 @@
 defmodule Meilisearch.IndexTest do
   use ExUnit.Case
-  alias Meilisearch.{Indexes, Updates}
+  alias Meilisearch.{Indexes, Tasks}
   import Support.Helpers, only: [{:wait_for_update, 1}, {:create_index, 1}]
 
   @test_index Meilisearch.Config.get(:test_index)
@@ -52,7 +52,7 @@ defmodule Meilisearch.IndexTest do
 
       {:ok, %{ "taskUid" => update_id }} = Indexes.create(@test_index)
 
-      assert {:ok, %{ "error" => %{ "code" => "index_already_exists" }}} = Updates.get(update_id)
+      assert {:ok, %{ "error" => %{ "code" => "index_already_exists" }}} = Tasks.get(update_id)
     end
 
     test "create new index with primary key if given" do
@@ -66,7 +66,7 @@ defmodule Meilisearch.IndexTest do
   end
 
   describe "Indexes.update" do
-    test "updates primary key" do
+    test "Tasks primary key" do
       create_index(@test_index)
 
       {:ok, %{ "taskUid" => update_id }} = Indexes.update(@test_index, primary_key: "new_primary_key")
@@ -107,7 +107,7 @@ defmodule Meilisearch.IndexTest do
     test "returns an error if index does not exist" do
       assert {:ok, %{ "status" => "enqueued", "taskUid" => update_id }} = Indexes.delete(@test_index)
 
-      assert {:ok, %{ "error" => %{ "code" => "index_not_found" }}} = Updates.get(update_id)
+      assert {:ok, %{ "error" => %{ "code" => "index_not_found" }}} = Tasks.get(update_id)
       #assert {:error, 404, _} = Indexes.delete(@test_index)
     end
   end

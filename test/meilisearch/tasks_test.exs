@@ -20,7 +20,7 @@ defmodule Meilisearch.TasksTest do
     :ok
   end
 
-  describe "Updates.get" do
+  describe "Tasks.get" do
     test "returns error, 404 with invalid update id" do
       {:error, status_code, message} = Tasks.get(10_071_982)
 
@@ -41,7 +41,7 @@ defmodule Meilisearch.TasksTest do
     end
   end
 
-  test "Updates.list returns list of updates" do
+  test "Tasks.list returns list of tasks" do
     Documents.add_or_replace(@test_index, [@test_document])
     {:ok, [update | _]} = Tasks.list(@test_index)
 
