@@ -17,8 +17,14 @@ defmodule Support.Helpers do
         :timer.sleep(500)
         wait_for_update(update_id)
 
-      _ ->
-        :timer.sleep(500)
+      message ->
+        :timer.sleep(200)
+        message
     end
+  end
+
+  def create_index(uid, opts \\ []) do
+    {:ok, %{"taskUid" => update_id}} = Indexes.create(uid, opts)
+    wait_for_update(update_id)
   end
 end

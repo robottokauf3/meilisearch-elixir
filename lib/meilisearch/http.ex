@@ -27,6 +27,13 @@ defmodule Meilisearch.HTTP do
     |> handle_response()
   end
 
+  @spec patch_request(String.t(), any, any, Keyword.t()) :: response()
+  def patch_request(url, body, headers \\ [], options \\ []) do
+    url
+    |> patch(body, headers, options)
+    |> handle_response()
+  end
+
   @spec post_request(String.t(), any, any, Keyword.t()) :: response()
   def post_request(url, body, headers \\ [], options \\ []) do
     url
@@ -68,9 +75,8 @@ defmodule Meilisearch.HTTP do
 
   # Utils
 
-  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code} = resp})
+  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code}})
   when status_code in 400..599 do
-    IO.inspect(resp)
     message = Map.get(body, "message")
     {:error, status_code, message}
   end
