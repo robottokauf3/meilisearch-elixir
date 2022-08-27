@@ -104,11 +104,10 @@ defmodule Meilisearch.IndexTest do
       assert {:ok, false} = Indexes.exists?(@test_index)
     end
 
-    test "returns an error if index does not exist" do
+    test "results in an error if index does not exist" do
       assert {:ok, %{ "status" => "enqueued", "taskUid" => update_id }} = Indexes.delete(@test_index)
 
       assert {:ok, %{ "error" => %{ "code" => "index_not_found" }}} = Tasks.get(update_id)
-      #assert {:error, 404, _} = Indexes.delete(@test_index)
     end
   end
 
