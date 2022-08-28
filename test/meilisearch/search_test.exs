@@ -20,6 +20,7 @@ defmodule Meilisearch.SearchTest do
   setup do
     Indexes.delete(@test_index)
     Indexes.create(@test_index)
+    Settings.update_filterable_attributes(@test_index, ["id"])
     Documents.add_or_replace(@test_index, @test_documents)
 
     on_exit(fn ->
@@ -39,9 +40,6 @@ defmodule Meilisearch.SearchTest do
       assert Map.get(hit, "title") == "The Thing"
     end
 
-    # Settings module needs to be updated first before we can test this - 
-    # we need to update filterable-attributes before it happens
-    @tag :skip 
     test "placeholder search should return matching results" do
       {:ok, %{"hits" => [hit]}} = Search.search(@test_index, nil, filter: "id = 1")
 

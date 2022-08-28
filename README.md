@@ -50,6 +50,47 @@ Meilisearch.Document.add_or_replace("index_name", documents)
 Meilisearch.Search.search("water")
 ```
 
+### Async Tasks
+
+Meilisearch enqueues most of the commands you execute. 
+
+Because of this, it might at times be necessary to "wait" until Meilisearch 
+has finished processing the given task before you can perform further operations.
+
+For example, when adding `Documents`, the return object is:
+```elixir
+{:ok, %{
+    "taskUid" => 1,
+    "indexUid" => "movies",
+    "status" => "enqueued",
+    "type" => "documentAdditionOrUpdate",
+    "enqueuedAt" => "2021-08-11T09:25:53.000000Z"
+}}
+```
+
+In order to block your program while you wait for the resolution of this enqueued
+task, you can use the `Tasks.await_result/2` method, which will continue to execute
+`get` requests to the `Tasks` endpoint until the `status` of the response is 
+either `succeeded` or `failed`.
+
+### Migrating from 0.20.0
+
+Most if not all endpoints in Meilisearch now return the status of an enqueued task.
+
+Whereas before methods like `Indexes.create` would immediately return information on the
+created index, now it is necessary to wait for the task to be resolved before accessing
+or further modifying a given entity - for this, use the `Tasks.await_result/2` function.
+
+Because of this, some functions do not return errors as expected - notably, `Indexes.create` when
+creating indexes with duplicate uid's, as well as `Indexes.delete` and `Indexes.update` in some cases. 
+
+Make sure to check the finalized task for errors that might have been caused by these
+methods (using `Task.await_result/2`).
+
+As well - the `Settings` API has changed. Whereas before one could access `facetableAttributes`,
+now this setting has been renamed `filterableAttributes`. In turn, `facets` in the `Settings`
+endpoint simply refers to the `maxValuesPerFacet` setting.
+
 ### Available Modules
 
 - [X] Index
@@ -85,6 +126,9 @@ MEILISEARCH_API_KEY=test_api_key mix test
 ```
 
 ## Compatibility
+
+The 0.30.X versions of this client have been teseted against the following versions of Meilisearch:
+  - v0.28.0
 
 The 0.20.X versions of this client have been tested against the following versions of Meilisearch:
   - v0.20.0
