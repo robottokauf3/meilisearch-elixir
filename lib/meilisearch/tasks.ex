@@ -124,4 +124,44 @@ defmodule Meilisearch.Tasks do
     end
   end
 
+  @doc """
+  Await the resolution of an async task. Keeps trying in `for_milli` intervals (default is 250ms).
+
+  # Example
+
+    iex> Meilisearch.Tasks.await_result(1)
+    {:ok,
+      %{ 
+        "uid" => 4,
+        "indexUid"  =>"movie",
+        "status" => "failed",
+        "type" => "indexDeletion",
+        "details" => %{
+          "deletedDocuments" => 0
+        },
+        "error" => %{
+          "message" => "Index `movie` not found.",
+          "code" => "index_not_found",
+          "type" => "invalid_request",
+          "link" => "https://docs.meilisearch.com/errors#index_not_found"
+        },
+        "duration" => "PT0.001192S",
+        "enqueuedAt" => "2022-08-04T12:28:15.159167Z",
+        "startedAt" => "2022-08-04T12:28:15.161996Z",
+        "finishedAt" => "2022-08-04T12:28:15.163188Z"
+      }
+    }
+  """
+  @spec await_result(String.t) :: HTTP.response()
+  def await_result(task_uid, for_milli \\ 250) do
+    case get(task_uid) do
+      {:ok, %{"status" => status}} when status in ["enqueued", "processing"] -> 
+        :timer.sleep(for_milli)
+        await_result(task_uid, for_milli)
+
+      message ->
+        message
+    end
+  end
+
 end
