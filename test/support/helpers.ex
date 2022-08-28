@@ -11,20 +11,7 @@ defmodule Support.Helpers do
     |> Enum.map(&Indexes.delete/1)
   end
 
-  def wait_for_update(update_id) do
-    case Tasks.get(update_id) do
-      {:ok, %{"status" => "enqueued"}} ->
-        :timer.sleep(500)
-        wait_for_update(update_id)
-      {:ok, %{"status" => "processing"}} ->
-        :timer.sleep(500)
-        wait_for_update(update_id)
-
-      message ->
-        :timer.sleep(200)
-        message
-    end
-  end
+  def wait_for_update(update_id), do: Tasks.await_result(update_id)
 
   def create_index(uid, opts \\ []) do
     {:ok, %{"taskUid" => update_id}} = Indexes.create(uid, opts)
