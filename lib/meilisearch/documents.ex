@@ -37,34 +37,44 @@ defmodule Meilisearch.Documents do
 
       iex> Meilisearch.Documents.list("meilisearch_test")
       {:ok,
-        [
-          %{
-            "id" => 2,
-            "tagline" => "You'll never go in the water again",
-            "title" => "Jaws"
-          },
-          %{
-            "id" => 1,
-            "tagline" => "In space no one can hear you scream",
-            "title" => "Alien"
-          }
-        ]
+        %{ 
+          "total" => 2,
+          "limit" => 20,
+          "offset" => 0,
+          "results" => [
+            %{
+              "id" => 2,
+              "tagline" => "You'll never go in the water again",
+              "title" => "Jaws"
+            },
+            %{
+              "id" => 1,
+              "tagline" => "In space no one can hear you scream", 
+              "title" => "Alien"
+            }
+          ]
+        }
       }
 
       iex> Meilisearch.Documents.get("meilisearch_test", limit: 2, offset: 4)
       {:ok,
-        [
-          %{
-            "id" => 6,
-            "tagline" => "Who ya gonna call?",
-            "title" => "Ghostbusters"
-          },
-          %{
-            "id" => 5,
-            "tagline" => "Be Afraid. Be very afraid.",
-            "title" => "The Fly"
-          }
-        ]
+        %{ 
+          "total" => 2,
+          "limit" => 2,
+          "offset" => 4,
+          "results" => [
+            %{
+              "id" => 6,
+              "tagline" => "Who ya gonna call?",
+              "title" => "Ghostbusters"
+            },
+            %{
+              "id" => 5,
+              "tagline" => "Be Afraid. Be very afraid.",
+              "title" => "The Fly"
+            }
+          ] 
+        }
       }
   """
   @spec list(String.t(), Keyword.t()) :: HTTP.response()
@@ -84,7 +94,7 @@ defmodule Meilisearch.Documents do
         "tagline" => "You'll never go in the water again",
         "title" => "Jaws"
       })
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"taskUid" => 1}}
 
       iex> Meilisearch.Documents.add_or_replace(
         "meilisearch_test",
@@ -101,7 +111,7 @@ defmodule Meilisearch.Documents do
           }
         ]
       )
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"taskUid" => 1}}
   """
 
   @spec add_or_replace(String.t(), list(any), Keyword.t()) :: HTTP.response()
@@ -127,7 +137,7 @@ defmodule Meilisearch.Documents do
         "tagline" => "You'll never go in the water again",
         "title" => "Jaws"
       })
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"taskUid" => 1}}
 
       iex> Meilisearch.Documents.add_or_update(
         "meilisearch_test",
@@ -144,7 +154,7 @@ defmodule Meilisearch.Documents do
           }
         ]
       )
-      {:ok, %{"updateId" => 1}}
+      {:ok, %{"taskUid" => 1}}
   """
   @spec add_or_update(String.t(), list(any), Keyword.t()) :: {:ok, any} | {:error, String.t()}
   def add_or_update(index_uid, docs, opts \\ [])
@@ -163,10 +173,10 @@ defmodule Meilisearch.Documents do
   ## Example
 
       iex> Meilisearch.Documents.delete("meilisearch_test", 1)
-      {:ok, %{"updateId" => 0}}
+      {:ok, %{"taskUid" => 0}}
 
       iex> Meilisearch.Documents.delete("meilisearch_test", [1,2,3,4])
-      {:ok, %{"updateId" => 0}}
+      {:ok, %{"taskUid" => 0}}
   """
 
   @spec delete(String.t(), String.t() | list(String.t())) :: {:ok, any} | {:error, String.t()}
@@ -184,7 +194,7 @@ defmodule Meilisearch.Documents do
   ## Example
 
       iex> Meilisearch.Documents.delete_all("meilisearch_test")
-      {:ok, %{"updateId" => 0}}
+      {:ok, %{"taskUid" => 0}}
 
   """
   @spec delete_all(String.t()) :: {:ok, any} | {:error, binary}

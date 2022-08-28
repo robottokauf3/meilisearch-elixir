@@ -25,17 +25,17 @@ defmodule Meilisearch.DocumentsTest do
   end
 
   test "Documents.add_or_replace" do
-    {:ok, update} = Documents.add_or_replace(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Documents.add_or_replace(@test_index, @test_document)
+    assert Map.has_key?(task, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(task, "taskUid"))
   end
 
   test "Documents.add_or_update" do
-    {:ok, update} = Documents.add_or_update(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
+    {:ok, task} = Documents.add_or_update(@test_index, @test_document)
+    assert Map.has_key?(task, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(task, "taskUid"))
   end
 
   describe "existing document" do
@@ -55,7 +55,7 @@ defmodule Meilisearch.DocumentsTest do
     end
 
     test "Documents.list" do
-      {:ok, [document | _]} = Documents.list(@test_index)
+      {:ok, %{ "results" => [document | _] }} = Documents.list(@test_index)
 
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"
