@@ -8,7 +8,8 @@ defmodule Meilisearch.SettingsTest do
   @synonyms %{alien: ["ufo"]}
   @stop_words ["the", "of", "to"]
   @ranking_rules ["typo", "words", "proximity", "attribute"]
-  @attributes_for_faceting ["title"]
+  @filterable_attributes ["title"]
+  @faceting %{ maxValuesPerFacet: 4 }
   @distinct_attribute "id"
   @searchable_attributes ["title"]
   @displayed_attributes ["title"]
@@ -30,7 +31,8 @@ defmodule Meilisearch.SettingsTest do
     {:ok, settings} = Settings.get(@test_index)
 
     assert Map.has_key?(settings, "rankingRules")
-    assert Map.has_key?(settings, "attributesForFaceting")
+    assert Map.has_key?(settings, "filterableAttributes")
+    assert Map.has_key?(settings, "faceting")
     assert Map.has_key?(settings, "displayedAttributes")
     assert Map.has_key?(settings, "distinctAttribute")
     assert Map.has_key?(settings, "searchableAttributes")
@@ -40,16 +42,16 @@ defmodule Meilisearch.SettingsTest do
 
   test "Settings.update" do
     {:ok, update} = Settings.update(@test_index, %{synonyms: @synonyms})
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset" do
     {:ok, update} = Settings.reset(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_synonyms" do
@@ -59,16 +61,16 @@ defmodule Meilisearch.SettingsTest do
 
   test "Settings.update_synonyms" do
     {:ok, update} = Settings.update_synonyms(@test_index, @synonyms)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_synonyms" do
     {:ok, update} = Settings.reset_synonyms(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_stop_words" do
@@ -78,67 +80,90 @@ defmodule Meilisearch.SettingsTest do
 
   test "Settings.update_stop_words" do
     {:ok, update} = Settings.update_stop_words(@test_index, @stop_words)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_stop_words" do
     {:ok, update} = Settings.reset_stop_words(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_ranking_rules" do
     {:ok, ranking_rules} = Settings.get_ranking_rules(@test_index)
 
     assert ranking_rules == [
-             "typo",
              "words",
+             "typo",
              "proximity",
              "attribute",
-             "wordsPosition",
+             "sort",
              "exactness"
            ]
   end
 
   test "Settings.update_ranking_rules" do
     {:ok, update} = Settings.update_ranking_rules(@test_index, @ranking_rules)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_ranking_rules" do
     {:ok, update} = Settings.reset_ranking_rules(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
-  test "Settings.get_attributes_for_faceting" do
-    {:ok, attributes_for_faceting} = Settings.get_attributes_for_faceting(@test_index)
-    assert attributes_for_faceting == []
+  test "Settings.get_faceting" do
+    assert {:ok, %{ "maxValuesPerFacet" => _ }} = Settings.get_faceting(@test_index)
   end
 
-  test "Settings.update_attributes_for_faceting" do
+  test "Settings.update_faceting" do
     {:ok, update} =
-      Settings.update_attributes_for_faceting(
+      Settings.update_faceting(
         @test_index,
-        @attributes_for_faceting
+        @faceting
       )
 
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
-  test "Settings.reset_attributes_for_faceting" do
-    {:ok, update} = Settings.reset_attributes_for_faceting(@test_index)
-    assert Map.has_key?(update, "updateId")
+  test "Settings.reset_faceting" do
+    {:ok, update} = Settings.reset_faceting(@test_index)
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
+  end
+
+  test "Settings.get_filterable_attributes" do
+    {:ok, filterable_attributes} = Settings.get_filterable_attributes(@test_index)
+    assert filterable_attributes == []
+  end
+
+  test "Settings.update_filterable_attributes" do
+    {:ok, update} =
+      Settings.update_filterable_attributes(
+        @test_index,
+        @filterable_attributes
+      )
+
+    assert Map.has_key?(update, "taskUid")
+
+    wait_for_update(Map.get(update, "taskUid"))
+  end
+
+  test "Settings.reset_filterable_attributes" do
+    {:ok, update} = Settings.reset_filterable_attributes(@test_index)
+    assert Map.has_key?(update, "taskUid")
+
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_distinct_attribute" do
@@ -153,16 +178,16 @@ defmodule Meilisearch.SettingsTest do
         @distinct_attribute
       )
 
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_distinct_attribute" do
     {:ok, update} = Settings.reset_distinct_attribute(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_searchable_attributes" do
@@ -177,16 +202,16 @@ defmodule Meilisearch.SettingsTest do
         @searchable_attributes
       )
 
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_searchable_attributes" do
     {:ok, update} = Settings.reset_searchable_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.get_displayed_attributes" do
@@ -201,15 +226,15 @@ defmodule Meilisearch.SettingsTest do
         @displayed_attributes
       )
 
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 
   test "Settings.reset_displayed_attributes" do
     {:ok, update} = Settings.reset_displayed_attributes(@test_index)
-    assert Map.has_key?(update, "updateId")
+    assert Map.has_key?(update, "taskUid")
 
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    wait_for_update(Map.get(update, "taskUid"))
   end
 end
