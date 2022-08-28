@@ -33,7 +33,7 @@ defmodule Meilisearch.SearchTest do
 
   describe "Search.search" do
     test "should return matching results" do
-      {:ok, %{"results" => [hit]}} = Search.search(@test_index, "warmest")
+      {:ok, %{"hits" => [hit]}} = Search.search(@test_index, "warmest")
 
       assert Map.get(hit, "id") == 2
       assert Map.get(hit, "title") == "The Thing"

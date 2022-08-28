@@ -6,7 +6,8 @@ defmodule Meilisearch.IndexTest do
   @test_index Meilisearch.Config.get(:test_index)
 
   setup do
-    Indexes.delete(@test_index)
+    {:ok, %{ "taskUid" => task_id }} = Indexes.delete(@test_index)
+    wait_for_update(task_id)
 
     :ok
   end
@@ -52,7 +53,7 @@ defmodule Meilisearch.IndexTest do
 
       {:ok, %{ "taskUid" => update_id }} = Indexes.create(@test_index)
 
-      assert {:ok, %{ "error" => %{ "code" => "index_already_exists" }}} = Tasks.get(update_id)
+      assert {:ok, %{ "error" => %{ "code" => "index_already_exists" }}} = wait_for_update(update_id)
     end
 
     test "create new index with primary key if given" do
@@ -106,6 +107,7 @@ defmodule Meilisearch.IndexTest do
 
     test "results in an error if index does not exist" do
       assert {:ok, %{ "status" => "enqueued", "taskUid" => update_id }} = Indexes.delete(@test_index)
+      wait_for_update(update_id)
 
       assert {:ok, %{ "error" => %{ "code" => "index_not_found" }}} = Tasks.get(update_id)
     end

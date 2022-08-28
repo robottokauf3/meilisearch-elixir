@@ -16,6 +16,9 @@ defmodule Support.Helpers do
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
         wait_for_update(update_id)
+      {:ok, %{"status" => "processing"}} ->
+        :timer.sleep(500)
+        wait_for_update(update_id)
 
       message ->
         :timer.sleep(200)
