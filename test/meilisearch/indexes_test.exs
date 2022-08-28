@@ -82,8 +82,8 @@ defmodule Meilisearch.IndexTest do
       assert {:error, "primary_key is required"} = Indexes.update(@test_index)
     end
 
-    @tag :skip
-    test "returns error if primary key is already set" do
+    @tag :skip # No error results if no documents exist in index
+    test "results in an error if primary key is already set" do
       create_index(@test_index)
 
       {:ok, %{ "taskUid" => update_id }} = Indexes.update(@test_index, primary_key: "new_primary_key")
@@ -91,8 +91,6 @@ defmodule Meilisearch.IndexTest do
 
       {:ok, %{ "taskUid" => update_id }} = Indexes.update(@test_index, primary_key: "another_primary_key")
       assert {:ok, %{ "status" => "failed" }} = wait_for_update(update_id)
-
-      # assert {:error, 400, _} = Indexes.update(@test_index, primary_key: "another_primary_key")
     end
   end
 
