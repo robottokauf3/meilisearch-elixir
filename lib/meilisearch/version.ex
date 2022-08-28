@@ -13,7 +13,7 @@ defmodule Meilisearch.Version do
   ## Example
 
       iex> Meilisearch.Version.get()
-      {:ok, %{"buildDate" => "2020-04-29T09:05:31.455410849+00:00", "commitSha" => "UNKNOWN", "pkgVersion" => "0.10.1"}}
+      {:ok, %{"commitDate" => "2020-04-29T09:05:31.455410849+00:00", "commitSha" => "UNKNOWN", "pkgVersion" => "0.10.1"}}
 
   """
   @spec get :: HTTP.response()
