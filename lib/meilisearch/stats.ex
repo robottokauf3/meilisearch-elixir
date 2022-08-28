@@ -13,7 +13,7 @@ defmodule Meilisearch.Stats do
   ## Example
 
       iex> Meilisearch.Stats.get("meilisearch_test")
-      {:ok, %{"fieldsFrequency" => %{}, "isIndexing" => false, "numberOfDocuments" => 0}}
+      {:ok, %{"fieldFrequency" => %{}, "isIndexing" => false, "numberOfDocuments" => 0}}
 
   """
   @spec get(String.t()) :: HTTP.response()

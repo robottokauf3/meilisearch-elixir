@@ -16,7 +16,6 @@ defmodule Meilisearch.Indexes do
       {:ok, [
         %{
           "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
           "primaryKey" => nil,
           "uid" => "meilisearch_test",
           "updatedAt" => "2020-05-23T06:20:18.394292399Z"
@@ -26,7 +25,10 @@ defmodule Meilisearch.Indexes do
   """
   @spec list :: HTTP.response()
   def list do
-    HTTP.get_request("indexes")
+    case HTTP.get_request("indexes") do
+      {:ok, %{ "results" => indexes }} -> {:ok, indexes}
+      error -> error
+    end
   end
 
   @doc """
@@ -38,7 +40,6 @@ defmodule Meilisearch.Indexes do
       {:ok,
         %{
           "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
           "primaryKey" => nil,
           "uid" => "meilisearch_test",
           "updatedAt" => "2020-05-23T06:20:18.394292399Z"
@@ -60,23 +61,23 @@ defmodule Meilisearch.Indexes do
 
       iex> Meilisearch.Indexes.create("meilisearch_test")
       {:ok,
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => nil,
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        {
+          "taskUid" => 0,
+          "indexUid" => "meilisearch_test",
+          "status" => "enqueued",
+          "type" => "indexCreation",
+          "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
         }
       }
 
       iex> Meilisearch.create("meilisearch_test", primary_key: "key_name")
       {:ok,
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => "key_name",
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
+        {
+          "taskUid" => 0,
+          "indexUid" => "meilisearch_test",
+          "status" => "enqueued",
+          "type" => "indexCreation",
+          "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
         }
       }
   """
@@ -100,11 +101,11 @@ defmodule Meilisearch.Indexes do
       iex> Meilisearch.Indexes.update("meilisearch_test", primary_key: "new_key")
       {:ok,
         %{
-          "primaryKey" => "new_primary_key",
-          "createdAt" => "2020-05-25T04:30:10.681720067Z",
-          "name" => "meilisearch_test",
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-25T04:30:10.685540577Z"
+          "taskUid": 1,
+          "indexUid": "meilisearch_test",
+          "status": "enqueued",
+          "type": "indexUpdate",
+          "enqueuedAt": "2021-08-12T10:00:00.000000Z"
         }
       }
   """
@@ -112,7 +113,7 @@ defmodule Meilisearch.Indexes do
   def update(uid, opts \\ []) do
     with {:ok, primary_key} <- Keyword.fetch(opts, :primary_key),
          body <- %{primaryKey: primary_key} do
-      HTTP.put_request("indexes/#{uid}", body)
+      HTTP.patch_request("indexes/#{uid}", body)
     else
       _ -> {:error, "primary_key is required"}
     end
@@ -124,10 +125,14 @@ defmodule Meilisearch.Indexes do
   ## Examples
 
       iex> Meilisearch.Indexes.delete("meilisearch_test")
-      {:ok, nil}
-
-      iex> Meilisearch.delete("nonexistent_index")
-      {:error, 404, Index meilisearch_test not found"}
+      {:ok, 
+        %{
+          "taskUid": 1,
+          "indexUid": "movies",
+          "status": "enqueued",
+          "type": "indexDeletion",
+          "enqueuedAt": "2021-08-12T10:00:00.000000Z"
+        }}
   """
   @spec delete(String.t()) :: HTTP.response()
   def delete(uid) do

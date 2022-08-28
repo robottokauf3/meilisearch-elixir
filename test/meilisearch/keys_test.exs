@@ -3,11 +3,12 @@ defmodule Meilisearch.KeysTest do
   alias Meilisearch.Keys
 
   test "Keys.get returns public and private keys" do
-    assert {
-             :ok,
+    assert { :ok,
              %{
-               "private" => _,
-               "public" => _
+               "results" => [
+                 %{ "actions" => [ "search" ] },
+                 %{ "actions" => [ "*" ] }
+               ]
              }
            } = Keys.get()
   end

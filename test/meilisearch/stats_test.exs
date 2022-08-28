@@ -1,5 +1,6 @@
 defmodule Meilisearch.StatsTest do
   use ExUnit.Case
+  import Support.Helpers, only: [{:create_index, 1}]
 
   alias Meilisearch.{Indexes, Stats}
 
@@ -12,14 +13,15 @@ defmodule Meilisearch.StatsTest do
   end
 
   test "get returns stats for given index" do
-    Indexes.create(@test_index)
+    create_index(@test_index)
 
-    assert {:ok, %{"fieldsDistribution" => _, "isIndexing" => _, "numberOfDocuments" => _}} =
+    assert {:ok, %{"fieldDistribution" => _, "isIndexing" => _, "numberOfDocuments" => _}} =
              Stats.get(@test_index)
   end
 
   test "get_all returns stats for all indexes" do
-    Indexes.create(@test_index)
+    create_index(@test_index)
+
     assert {:ok, %{"databaseSize" => _, "indexes" => %{@test_index => _}}} = Stats.list()
   end
 end
