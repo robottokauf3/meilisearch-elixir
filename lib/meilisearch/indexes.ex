@@ -14,20 +14,25 @@ defmodule Meilisearch.Indexes do
   ## Example
 
       iex> Meilisearch.Indexes.list()
-      {:ok, [
-        %{
-          "uid" => "movies",
-          "primaryKey" => "movie_id",
-          "createdAt" => "2019-11-20T09:40:33.711324Z",
-          "updatedAt" => "2019-11-20T10:16:42.761858Z"
-        },
-        %{
-          "uid" => "movie_reviews",
-          "primaryKey" => nil,
-          "createdAt" => "2019-11-20T09:40:33.711324Z",
-          "updatedAt" => "2019-11-20T10:16:42.761858Z"
-        }
-      ]}
+      {:ok, %{
+        "limit" => 20,
+        "offset" => 0,
+        "results" => [
+          %{
+            "uid" => "movies",
+            "primaryKey" => "movie_id",
+            "createdAt" => "2019-11-20T09:40:33.711324Z",
+            "updatedAt" => "2019-11-20T10:16:42.761858Z"
+          },
+          %{
+            "uid" => "movie_reviews",
+            "primaryKey" => nil,
+            "createdAt" => "2019-11-20T09:40:33.711324Z",
+            "updatedAt" => "2019-11-20T10:16:42.761858Z"
+          }
+        ],
+        "total" => 2
+      }}
 
   """
   @spec list :: HTTP.response()
@@ -65,7 +70,7 @@ defmodule Meilisearch.Indexes do
 
       iex> Meilisearch.Indexes.create("movies")
       {:ok, %{
-        "uid" => 0,
+        "taskUid" => 0,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "indexCreation",
@@ -74,7 +79,7 @@ defmodule Meilisearch.Indexes do
 
       iex> Meilisearch.create("movies", primary_key: "movie_id")
       {:ok, %{
-        "uid" => 0,
+        "taskUid" => 0,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "indexCreation",
@@ -103,7 +108,7 @@ defmodule Meilisearch.Indexes do
 
       iex> Meilisearch.Indexes.update("movie_review", primary_key: "movie_review_id")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movie_review",
         "status" => "enqueued",
         "type" => "indexUpdate",
@@ -114,6 +119,7 @@ defmodule Meilisearch.Indexes do
   def update(uid, opts \\ []) do
     with {:ok, primary_key} <- Keyword.fetch(opts, :primary_key),
          body <- %{primaryKey: primary_key} do
+      IO.inspect(body, label: "body")
       HTTP.put_request("indexes/#{uid}", body)
     else
       _ -> {:error, 400, "primary_key is required"}
@@ -128,7 +134,7 @@ defmodule Meilisearch.Indexes do
 
       iex> Meilisearch.Indexes.delete("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "indexDeletion",

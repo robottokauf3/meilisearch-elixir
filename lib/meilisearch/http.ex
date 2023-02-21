@@ -75,8 +75,10 @@ defmodule Meilisearch.HTTP do
 
   # Utils
 
-  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code}})
+  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code}} = resp)
        when status_code in 400..599 do
+    IO.inspect(resp, label: "resp")
+
     message = Map.get(body, "message")
     {:error, status_code, message}
   end

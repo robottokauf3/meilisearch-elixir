@@ -21,6 +21,9 @@ defmodule Meilisearch.Documents do
         "overview" => "When a scientists daughter is kidnapped, American Ninja, attempts to find her, but this time he teams up with a youngster he has trained in the ways of the ninja.",
         "release_date" => "1993-01-01"
       }}
+
+      iex> Meilisearch.Documents.get("movies", 404)
+      {:error, 404, "Document `404` not found."}
   """
   @spec get(String.t(), String.t()) :: HTTP.response()
   def get(index_uid, document_id) do
@@ -40,40 +43,50 @@ defmodule Meilisearch.Documents do
   ## Examples
 
       iex> Meilisearch.Documents.list("movies")
-      {:ok, [
-        %{
-          "id" => 1,
-          "release_date" => "1993-01-01",
-          "poster" => "https://image.tmdb.org/t/p/w1280/iuAQVI4mvjI83wnirpD8GVNRVuY.jpg",
-          "title" => "American Ninja 5",
-          "overview" => "When a scientists daughter is kidnapped, American Ninja, attempts to find her, but this time he teams up with a youngster he has trained in the ways of the ninja."
-        },
-        %{
-          "id" => 2,
-          "title" => "Dead in a Week (Or Your Money Back)",
-          "release_date" => "2018-09-12",
-          "poster" => "https://image.tmdb.org/t/p/w1280/f4ANVEuEaGy2oP5M0Y2P1dwxUNn.jpg",
-          "overview" => "William has failed to kill himself so many times that he outsources his suicide to aging assassin Leslie. But with the contract signed and death assured within a week (or his money back), William suddenly discovers reasons to live... However Leslie is under pressure from his boss to make sure the contract is completed."
-        }
-      ]}
+      {:ok, %{
+        "limit" => 20,
+        "offset" => 0,
+          "results" => [
+          %{
+            "id" => 1,
+            "release_date" => "1993-01-01",
+            "poster" => "https://image.tmdb.org/t/p/w1280/iuAQVI4mvjI83wnirpD8GVNRVuY.jpg",
+            "title" => "American Ninja 5",
+            "overview" => "When a scientists daughter is kidnapped, American Ninja, attempts to find her, but this time he teams up with a youngster he has trained in the ways of the ninja."
+          },
+          %{
+            "id" => 2,
+            "title" => "Dead in a Week (Or Your Money Back)",
+            "release_date" => "2018-09-12",
+            "poster" => "https://image.tmdb.org/t/p/w1280/f4ANVEuEaGy2oP5M0Y2P1dwxUNn.jpg",
+            "overview" => "William has failed to kill himself so many times that he outsources his suicide to aging assassin Leslie. But with the contract signed and death assured within a week (or his money back), William suddenly discovers reasons to live... However Leslie is under pressure from his boss to make sure the contract is completed."
+          }
+        ],
+        "total" => 2
+      }}
 
       iex> Meilisearch.Documents.get("movies", limit: 2, offset: 4)
-      {:ok, [
-        %{
-          "id" => 5,
-          "release_date" => "1993-01-01",
-          "poster" => "https://image.tmdb.org/t/p/w1280/iuAQVI4mvjI83wnirpD8GVNRVuY.jpg",
-          "title" => "American Ninja 5",
-          "overview" => "When a scientists daughter is kidnapped, American Ninja, attempts to find her, but this time he teams up with a youngster he has trained in the ways of the ninja."
-        },
-        %{
-          "id" => 6,
-          "title" => "Dead in a Week (Or Your Money Back)",
-          "release_date" => "2018-09-12",
-          "poster" => "https://image.tmdb.org/t/p/w1280/f4ANVEuEaGy2oP5M0Y2P1dwxUNn.jpg",
-          "overview" => "William has failed to kill himself so many times that he outsources his suicide to aging assassin Leslie. But with the contract signed and death assured within a week (or his money back), William suddenly discovers reasons to live... However Leslie is under pressure from his boss to make sure the contract is completed."
-        }
-      ]}
+      {:ok, %{
+        "limit" => 20,
+        "offset" => 0,
+        "results" => [
+          %{
+            "id" => 5,
+            "release_date" => "1993-01-01",
+            "poster" => "https://image.tmdb.org/t/p/w1280/iuAQVI4mvjI83wnirpD8GVNRVuY.jpg",
+            "title" => "American Ninja 5",
+            "overview" => "When a scientists daughter is kidnapped, American Ninja, attempts to find her, but this time he teams up with a youngster he has trained in the ways of the ninja."
+          },
+          %{
+            "id" => 6,
+            "title" => "Dead in a Week (Or Your Money Back)",
+            "release_date" => "2018-09-12",
+            "poster" => "https://image.tmdb.org/t/p/w1280/f4ANVEuEaGy2oP5M0Y2P1dwxUNn.jpg",
+            "overview" => "William has failed to kill himself so many times that he outsources his suicide to aging assassin Leslie. But with the contract signed and death assured within a week (or his money back), William suddenly discovers reasons to live... However Leslie is under pressure from his boss to make sure the contract is completed."
+          }
+        ],
+        "total" => 6
+      }}
   """
   @spec list(String.t(), Keyword.t()) :: HTTP.response()
   def list(index_uid, opts \\ []) do

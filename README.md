@@ -21,10 +21,10 @@ end
 
 ```elixir
 # Create Index
-Meilisearch.Index.create("index_name")
+Meilisearch.Indexes.create("index_name")
 
 # Create Index and set primary key
-Meilisearch.Index.create("index_name", primary_key: "key_name")
+Meilisearch.Indexes.create("index_name", primary_key: "key_name")
 
 # Insert documents
 documents = [

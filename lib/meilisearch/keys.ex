@@ -13,6 +13,8 @@ defmodule Meilisearch.Keys do
   ## Example
       iex> Meilisearch.Keys.list()
       {:ok, %{
+        "limit" => 20,
+        "offset" => 0,
         "results" => [
           %{
             "description" => "Manage documents: Products/Reviews API key",
@@ -55,7 +57,8 @@ defmodule Meilisearch.Keys do
             "createdAt" => "2021-08-11T10:00:00Z",
             "updatedAt" => "2021-08-11T10:00:00Z"
           }
-        ]
+        ],
+        "total" => 3
       }}
   """
   @spec list() :: HTTP.response()
