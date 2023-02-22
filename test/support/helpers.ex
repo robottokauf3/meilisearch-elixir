@@ -7,6 +7,7 @@ defmodule Support.Helpers do
     {:ok, indexes} = Indexes.list()
 
     indexes
+    |> Map.get("results")
     |> Enum.map(fn %{"uid" => uid} -> uid end)
     |> Enum.map(&Indexes.delete/1)
   end
@@ -17,8 +18,12 @@ defmodule Support.Helpers do
   def wait_for_task_status({:ok, task}, status), do: wait_for_task_status(task, status)
   def wait_for_task_status({:error, _, _}, _), do: false
 
-  def wait_for_task_status(task = %{"uid" => uid}, status) do
-    case Tasks.get(uid) do
+  def wait_for_task_status(task = %{"taskUid" => taskUid}, status) do
+    case Tasks.get(taskUid) do
+      {:ok, %{"status" => "processing"}} ->
+        :timer.sleep(500)
+        wait_for_task_status(task, status)
+
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
         wait_for_task_status(task, status)
@@ -36,8 +41,8 @@ defmodule Support.Helpers do
   def wait_for_task({:ok, task}), do: wait_for_task(task)
   def wait_for_task({:error, _, _}), do: false
 
-  def wait_for_task(task = %{"uid" => uid}) do
-    case Tasks.get(uid) do
+  def wait_for_task(task = %{"taskUid" => taskUid}) do
+    case Tasks.get(taskUid) do
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
         wait_for_task(task)

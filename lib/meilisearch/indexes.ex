@@ -119,8 +119,7 @@ defmodule Meilisearch.Indexes do
   def update(uid, opts \\ []) do
     with {:ok, primary_key} <- Keyword.fetch(opts, :primary_key),
          body <- %{primaryKey: primary_key} do
-      IO.inspect(body, label: "body")
-      HTTP.put_request("indexes/#{uid}", body)
+      HTTP.patch_request("indexes/#{uid}", body)
     else
       _ -> {:error, 400, "primary_key is required"}
     end

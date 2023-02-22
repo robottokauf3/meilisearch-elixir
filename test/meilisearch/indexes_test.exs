@@ -19,13 +19,18 @@ defmodule Meilisearch.IndexTest do
 
   describe "Indexes.list" do
     test "returns an empty list if no indexes exist" do
-      assert {:ok, []} = Indexes.list()
+      {:ok, response} = Indexes.list()
+
+      assert %{"limit" => 20, "offset" => 0, "results" => [], "total" => 0} == response
     end
 
     test "returns list of existing indexes" do
       wait_for_task(Indexes.create(@test_index))
-      assert {:ok, [index]} = Indexes.list()
-      assert %{"uid" => @test_index, "name" => @test_index, "primaryKey" => nil} = index
+
+      {:ok, response} = Indexes.list()
+
+      assert %{"limit" => 20, "offset" => 0, "results" => [index], "total" => 1} = response
+      assert %{"uid" => @test_index, "primaryKey" => nil} = index
     end
   end
 
@@ -36,7 +41,6 @@ defmodule Meilisearch.IndexTest do
 
       assert %{
                "uid" => @test_index,
-               "name" => @test_index,
                "primaryKey" => nil,
                "createdAt" => _,
                "updatedAt" => _

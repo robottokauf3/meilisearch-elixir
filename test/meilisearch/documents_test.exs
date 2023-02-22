@@ -41,13 +41,15 @@ defmodule Meilisearch.DocumentsTest do
 
     test "Documents.get" do
       {:ok, document} = Documents.get(@test_index, 1)
+
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"
       assert Map.get(document, "tagline") == "In space no one can hear you scream"
     end
 
     test "Documents.list" do
-      {:ok, [document | _]} = Documents.list(@test_index)
+      {:ok, response} = Documents.list(@test_index)
+      %{"limit" => 20, "offset" => 0, "results" => [document | _], "total" => 1} = response
 
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"

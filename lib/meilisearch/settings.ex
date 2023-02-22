@@ -101,7 +101,7 @@ defmodule Meilisearch.Settings do
         }
       })
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -121,7 +121,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -165,7 +165,7 @@ defmodule Meilisearch.Settings do
           "release_date"
       ])
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -174,7 +174,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_displayed_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_displayed_attributes(index_uid, displayed_attributes) do
-    HTTP.post_request(
+    HTTP.put_request(
       "indexes/#{index_uid}/settings/displayed-attributes",
       displayed_attributes
     )
@@ -188,7 +188,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_displayed_attributes("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -222,7 +222,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.update_distinct_attribute("movies", "id")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -231,7 +231,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_distinct_attribute(String.t(), String.t()) :: HTTP.response()
   def update_distinct_attribute(index_uid, distinct_attribute) do
-    HTTP.post_request(
+    HTTP.put_request(
       "indexes/#{index_uid}/settings/distinct-attribute",
       distinct_attribute
     )
@@ -245,7 +245,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_distinct_attribute("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -285,7 +285,7 @@ defmodule Meilisearch.Settings do
         "director"
       ])
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -294,7 +294,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_filterable_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_filterable_attributes(index_uid, filterable_attributes) do
-    HTTP.post_request(
+    HTTP.put_request(
       "indexes/#{index_uid}/settings/filterable-attributes",
       filterable_attributes
     )
@@ -308,7 +308,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_filterable_attributes("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -362,7 +362,7 @@ defmodule Meilisearch.Settings do
         ]
       )
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -371,7 +371,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_ranking_rules(String.t(), list(String.t())) :: HTTP.response()
   def update_ranking_rules(index_uid, ranking_rules) do
-    HTTP.post_request("indexes/#{index_uid}/settings/ranking-rules", ranking_rules)
+    HTTP.put_request("indexes/#{index_uid}/settings/ranking-rules", ranking_rules)
   end
 
   @doc """
@@ -382,7 +382,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_ranking_rules("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -424,7 +424,7 @@ defmodule Meilisearch.Settings do
         "genre"
       ])
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -433,7 +433,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_searchable_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_searchable_attributes(index_uid, searchable_attributes) do
-    HTTP.post_request(
+    HTTP.put_request(
       "indexes/#{index_uid}/settings/searchable-attributes",
       searchable_attributes
     )
@@ -447,7 +447,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_searchable_attributes("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -487,7 +487,7 @@ defmodule Meilisearch.Settings do
         "author"
       ])
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -496,7 +496,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_sortable_attributes(String.t(), list(String.t())) :: HTTP.response()
   def update_sortable_attributes(index_uid, sortable_attributes) do
-    HTTP.post_request(
+    HTTP.put_request(
       "indexes/#{index_uid}/settings/sortable-attributes",
       sortable_attributes
     )
@@ -510,7 +510,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_sortable_attributes("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -548,7 +548,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.update_stop_words("movies", ["the", "of", "to"])
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -557,7 +557,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_stop_words(String.t(), list(String.t())) :: HTTP.response()
   def update_stop_words(index_uid, stop_words) do
-    HTTP.post_request("indexes/#{index_uid}/settings/stop-words", stop_words)
+    HTTP.put_request("indexes/#{index_uid}/settings/stop-words", stop_words)
   end
 
   @doc """
@@ -568,7 +568,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_stop_words("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -618,7 +618,7 @@ defmodule Meilisearch.Settings do
         "wow" => ["world of warcraft"]
       })
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",
@@ -627,7 +627,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update_synonyms(String.t(), any()) :: HTTP.response()
   def update_synonyms(index_uid, synonyms) do
-    HTTP.post_request("indexes/#{index_uid}/settings/synonyms", synonyms)
+    HTTP.put_request("indexes/#{index_uid}/settings/synonyms", synonyms)
   end
 
   @doc """
@@ -638,7 +638,7 @@ defmodule Meilisearch.Settings do
 
       iex> Meilisearch.Settings.reset_synonyms("movies")
       {:ok, %{
-        "uid" => 1,
+        "taskUid" => 1,
         "indexUid" => "movies",
         "status" => "enqueued",
         "type" => "settingsUpdate",

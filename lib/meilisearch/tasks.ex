@@ -90,7 +90,7 @@ defmodule Meilisearch.Tasks do
   """
   @spec list(String.t()) :: HTTP.response()
   def list(index_uid) do
-    HTTP.get_request("indexes/#{index_uid}/tasks")
+    HTTP.get_request("tasks", [], uid: index_uid)
   end
 
   @doc """
@@ -123,41 +123,7 @@ defmodule Meilisearch.Tasks do
       }
   """
   @spec get(String.t() | integer) :: HTTP.response()
-  def get(task_id) do
-    HTTP.get_request("tasks/#{task_id}")
-  end
-
-  @doc """
-  Get the status of individual task for given index.
-  ([ref.](https://docs.meilisearch.com/reference/api/tasks.html#get-task-by-index))
-
-  ## Example
-      iex> Meilisearch.Tasks.get("movies", 1)
-      {:ok,
-        %{
-          "uid" => 1,
-          "indexUid" => "movies",
-          "status" => "succeeded",
-          "type" => "settingsUpdate",
-          "details" => %{
-            "rankingRules" => [
-              "typo",
-              "ranking:desc",
-              "words",
-              "proximity",
-              "attribute",
-              "exactness"
-            ]
-          },
-          "duration" => "PT1S",
-          "enqueuedAt" => "2021-08-10T14:29:17.000000Z",
-          "startedAt" => "2021-08-10T14:29:18.000000Z",
-          "finishedAt" => "2021-08-10T14:29:19.000000Z"
-        }
-      }
-  """
-  @spec get(String.t(), String.t() | integer) :: HTTP.response()
-  def get(index_uid, task_id) do
-    HTTP.get_request("indexes/#{index_uid}/tasks/#{task_id}")
+  def get(task_uid) do
+    HTTP.get_request("tasks/#{task_uid}")
   end
 end

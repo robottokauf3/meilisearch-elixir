@@ -45,14 +45,14 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.update(@test_index, %{synonyms: @synonyms})
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.reset" do
     {:ok, task} = Settings.reset(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.get_synonyms" do
@@ -64,14 +64,14 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.update_synonyms(@test_index, @synonyms)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.reset_synonyms" do
     {:ok, task} = Settings.reset_synonyms(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.get_stop_words" do
@@ -83,14 +83,14 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.update_stop_words(@test_index, @stop_words)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.reset_stop_words" do
     {:ok, task} = Settings.reset_stop_words(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
   end
 
   test "Settings.get_ranking_rules" do
@@ -108,13 +108,7 @@ defmodule Meilisearch.SettingsTest do
   test "Settings.update_ranking_rules" do
     assert wait_for_task_success(Settings.update_ranking_rules(@test_index, @ranking_rules))
 
-    assert {:ok,
-            [
-              "typo",
-              "words",
-              "proximity",
-              "attribute"
-            ]} = Settings.get_ranking_rules(@test_index)
+    assert {:ok, @ranking_rules} = Settings.get_ranking_rules(@test_index)
   end
 
   test "Settings.reset_ranking_rules" do
@@ -143,7 +137,7 @@ defmodule Meilisearch.SettingsTest do
       )
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, "id"} = Settings.get_distinct_attribute(@test_index)
   end
 
@@ -152,7 +146,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.reset_distinct_attribute(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, nil} = Settings.get_distinct_attribute(@test_index)
   end
 
@@ -168,7 +162,7 @@ defmodule Meilisearch.SettingsTest do
       )
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["title"]} = Settings.get_searchable_attributes(@test_index)
   end
 
@@ -176,7 +170,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.reset_searchable_attributes(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["*"]} = Settings.get_searchable_attributes(@test_index)
   end
 
@@ -192,7 +186,7 @@ defmodule Meilisearch.SettingsTest do
       )
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["title"]} = Settings.get_displayed_attributes(@test_index)
   end
 
@@ -201,7 +195,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.reset_displayed_attributes(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["*"]} = Settings.get_displayed_attributes(@test_index)
   end
 
@@ -217,7 +211,7 @@ defmodule Meilisearch.SettingsTest do
       )
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["title"]} = Settings.get_sortable_attributes(@test_index)
   end
 
@@ -226,7 +220,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.reset_sortable_attributes(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, []} = Settings.get_sortable_attributes(@test_index)
   end
 
@@ -242,7 +236,7 @@ defmodule Meilisearch.SettingsTest do
       )
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, ["title"]} = Settings.get_filterable_attributes(@test_index)
   end
 
@@ -250,7 +244,7 @@ defmodule Meilisearch.SettingsTest do
     {:ok, task} = Settings.reset_filterable_attributes(@test_index)
 
     wait_for_task(task)
-    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "uid"))
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, []} = Settings.get_filterable_attributes(@test_index)
   end
 end
