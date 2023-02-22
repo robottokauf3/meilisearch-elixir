@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :meilisearch,
   # Latest version from docker-compose.yml
