@@ -24,6 +24,8 @@ defmodule Meilisearch.Search do
     * `attributesToHighlight` 	Attributes whose values will contain highlighted matching terms.  Defaults to `nil`
     * `matches` 	Defines whether an object that contains information about the matches should be returned or not.  Defaults to `false`
     * `sort` 	Sort search results according to the attributes and sorting order (asc or desc) specified.  Defaults to `nil`
+    * `page` 	Setting page results in more accurate paginated search results. Page is the page to show of course.  Defaults to `nil`
+    * `hitsPerPage` 	Setting hitsPerPage results in more accurate paginated search results. HitsPerPage is the number of entries shown on a page.  Defaults to `nil`
 
   ## Examples
 
@@ -61,6 +63,23 @@ defmodule Meilisearch.Search do
         "query" => "where art thou"
       }}
 
+      iex> Meilisearch.Search.search("movies", nil, filter: "id = 2", page: 1, hitsPerPage: 10)
+      {:ok, %{
+        "hits" => [
+          %{
+            "id" => 2,
+            "tagline" => "They have a plan but not a clue",
+            "title" => "O' Brother Where Art Thou"
+          }
+        ],
+        "page" => 1,
+        "hitsPerPage" => 10,
+        "totalHits" => 1,
+        "totalPages" => 1,
+        "processingTimeMs" => 17,
+        "query" => "where art thou"
+      }}
+
       iex> Meilisearch.Search.search("movies", "nothing will match")
       {:ok, %{
         "hits" => [],
@@ -73,13 +92,13 @@ defmodule Meilisearch.Search do
       }}
   """
   @spec search(String.t(), String.t() | nil, Keyword.t()) :: HTTP.response()
-  def search(uid, search_query, opts \\ []) do
+  def search(index_uid, search_query, opts \\ []) do
     params =
       case search_query do
         nil -> opts
         q -> [{:q, q} | opts]
       end
 
-    HTTP.post_request("indexes/#{uid}/search", Enum.into(params, %{}))
+    HTTP.post_request("indexes/#{index_uid}/search", Enum.into(params, %{}))
   end
 end

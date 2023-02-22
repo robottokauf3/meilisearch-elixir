@@ -12,7 +12,7 @@ by adding `meilisearch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:meilisearch, "~> 0.25.2"}
+    {:meilisearch, "~> 1.0.0"}
   ]
 end
 ```
@@ -81,25 +81,30 @@ config :meilisearch,
 
 ```shell
 MEILISEARCH_ENDPOINT=http://localhost:7700 mix test
-MEILISEARCH_API_KEY=test_api_key mix test
+MEILISEARCH_API_KEY=test_api_key_very_secure mix test
 ```
 
 ## Compatibility
 
-The 0.25.X versions of this client have been tested against the following versions of Meilisearch:
-  - v0.25.2
-  - v0.25.1
-  - v0.25.0
+The 1.0.X versions of this client have been tested against the following versions of Meilisearch:
+  - v1.0.0
+  - v1.0.1
 
 ## Development
 
 You will need  Meilisearch running locally for development and testing. You can do this via Docker:
 
 ```
-$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=test_api_key
+$ docker run -it --rm -p 7700:7700 -e MEILI_MASTER_KEY=test_api_key_very_secure getmeili/meilisearch:latest /bin/sh -c /bin/meilisearch
 ```
 
 Or using the provided devcontainer configuration.
+
+And then just run your tests, as you usual would: 
+
+```
+$ mix test
+```
 
 ## License
 

@@ -1,26 +1,10 @@
 version: "3"
 services:
-  meilisearch-0.25.2:
-    image: "getmeili/meilisearch:v0.25.2"
+  meilisearch:
+    image: "getmeili/meilisearch:latest"
     ports:
-      - "77252:7700"
+      - "7700:7700"
     environment:
       - MEILI_NO_ANALYTICS=true
       - MEILI_NO_SENTRY=true
-      - MEILI_MASTER_KEY=test_api_key
-  meilisearch-0.25.1:
-    image: "getmeili/meilisearch:v0.25.1"
-    ports:
-      - "77251:7700"
-    environment:
-      - MEILI_NO_ANALYTICS=true
-      - MEILI_NO_SENTRY=true
-      - MEILI_MASTER_KEY=test_api_key
-  meilisearch-0.25.0:
-    image: "getmeili/meilisearch:v0.25.0"
-    ports:
-      - "77250:7700"
-    environment:
-      - MEILI_NO_ANALYTICS=true
-      - MEILI_NO_SENTRY=true
-      - MEILI_MASTER_KEY=test_api_key
+      - MEILI_MASTER_KEY=test_api_key_very_secure

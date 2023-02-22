@@ -11,9 +11,9 @@ jobs:
 
     strategy:
       matrix:
-        elixir: [1.12.2]
+        elixir: [1.12.2, 1.14.3]
         otp: [24.0]
-        meilisearch: [0.25.0, 0.25.1, 0.25.2]
+        meilisearch: [1.0.0, 1.0.1]
 
     steps:
       - uses: actions/checkout@v2
