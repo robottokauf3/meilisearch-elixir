@@ -18,8 +18,8 @@ defmodule Support.Helpers do
   def wait_for_task_status({:ok, task}, status), do: wait_for_task_status(task, status)
   def wait_for_task_status({:error, _, _}, _), do: false
 
-  def wait_for_task_status(task = %{"taskUid" => taskUid}, status) do
-    case Tasks.get(taskUid) do
+  def wait_for_task_status(task = %{"taskUid" => task_uid}, status) do
+    case Tasks.get(task_uid) do
       {:ok, %{"status" => "processing"}} ->
         :timer.sleep(500)
         wait_for_task_status(task, status)
@@ -41,8 +41,8 @@ defmodule Support.Helpers do
   def wait_for_task({:ok, task}), do: wait_for_task(task)
   def wait_for_task({:error, _, _}), do: false
 
-  def wait_for_task(task = %{"taskUid" => taskUid}) do
-    case Tasks.get(taskUid) do
+  def wait_for_task(task = %{"taskUid" => task_uid}) do
+    case Tasks.get(task_uid) do
       {:ok, %{"status" => "enqueued"}} ->
         :timer.sleep(500)
         wait_for_task(task)

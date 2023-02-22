@@ -75,7 +75,7 @@ defmodule Meilisearch.HTTP do
 
   # Utils
 
-  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code}} = resp)
+  defp handle_response({:ok, %HTTPoison.Response{body: body, status_code: status_code}})
        when status_code in 400..599 do
     message =
       case body do
