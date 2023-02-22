@@ -64,7 +64,7 @@ defmodule Meilisearch.Settings do
   ## Example
 
       iex> Meilisearch.Settings.update("movies", %{
-        "rankingRules"" => [
+        "rankingRules" => [
           "words",
           "typo",
           "proximity",
@@ -74,30 +74,30 @@ defmodule Meilisearch.Settings do
           "release_date:desc",
           "rank:desc"
         ],
-        "distinctAttribute"" => "movie_id",
-        "searchableAttributes"" => [
+        "distinctAttribute" => "movie_id",
+        "searchableAttributes" => [
           "title",
           "description",
           "genre"
         ],
-        "displayedAttributes"" => [
+        "displayedAttributes" => [
           "title",
           "description",
           "genre",
           "release_date"
         ],
-        "stopWords"" => [
+        "stopWords" => [
           "the",
           "a",
           "an"
         ],
-        "sortableAttributes"" => [
+        "sortableAttributes" => [
           "title",
           "release_date"
         ],
-        "synonyms"" => %{
-          "wolverine"" => ["xmen", "logan"],
-          "logan"" => ["wolverine"]
+        "synonyms" => %{
+          "wolverine" => ["xmen", "logan"],
+          "logan" => ["wolverine"]
         }
       })
       {:ok, %{
@@ -110,7 +110,7 @@ defmodule Meilisearch.Settings do
   """
   @spec update(String.t(), any()) :: HTTP.response()
   def update(index_uid, settings \\ %{}) do
-    HTTP.post_request("indexes/#{index_uid}/settings", settings)
+    HTTP.patch_request("indexes/#{index_uid}/settings", settings)
   end
 
   @doc """
