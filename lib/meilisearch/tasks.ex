@@ -88,9 +88,13 @@ defmodule Meilisearch.Tasks do
         }
       }
   """
-  @spec list(String.t()) :: HTTP.response()
+  @spec list(String.t() | [String.t()]) :: HTTP.response()
+  def list(index_uid) when is_list(index_uid) do
+    HTTP.get_request("tasks", [], indexUids: Enum.join(index_uid, ","))
+  end
+
   def list(index_uid) do
-    HTTP.get_request("tasks", [], uid: index_uid)
+    HTTP.get_request("tasks", [], indexUids: index_uid)
   end
 
   @doc """

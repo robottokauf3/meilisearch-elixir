@@ -28,13 +28,13 @@ defmodule Meilisearch.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :httpoison]
+      extra_applications: [:logger]
     ]
   end
 
   defp deps do
     [
-      {:httpoison, "~> 1.8"},
+      {:req, "~> 0.3"},
       {:jason, "~> 1.2"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},

@@ -46,7 +46,7 @@ defmodule Meilisearch.Documents do
       {:ok, %{
         "limit" => 20,
         "offset" => 0,
-          "results" => [
+        "results" => [
           %{
             "id" => 1,
             "release_date" => "1993-01-01",
@@ -89,8 +89,8 @@ defmodule Meilisearch.Documents do
       }}
   """
   @spec list(String.t(), Keyword.t()) :: HTTP.response()
-  def list(index_uid, opts \\ []) do
-    HTTP.get_request("indexes/#{index_uid}/documents", [], params: opts)
+  def list(index_uid, params \\ []) do
+    HTTP.get_request("indexes/#{index_uid}/documents", [], params)
   end
 
   @doc """
@@ -139,14 +139,14 @@ defmodule Meilisearch.Documents do
   """
 
   @spec add_or_replace(String.t(), list(any), Keyword.t()) :: HTTP.response()
-  def add_or_replace(index_uid, docs, opts \\ [])
+  def add_or_replace(index_uid, docs, params \\ [])
 
-  def add_or_replace(index_uid, doc, opts) when not is_list(doc) do
-    add_or_replace(index_uid, [doc], opts)
+  def add_or_replace(index_uid, doc, params) when not is_list(doc) do
+    add_or_replace(index_uid, [doc], params)
   end
 
-  def add_or_replace(index_uid, docs, opts) do
-    HTTP.post_request("indexes/#{index_uid}/documents", docs, [], params: opts)
+  def add_or_replace(index_uid, docs, params) do
+    HTTP.post_request("indexes/#{index_uid}/documents", docs, [], params)
   end
 
   @doc """
@@ -194,14 +194,14 @@ defmodule Meilisearch.Documents do
       }}
   """
   @spec add_or_update(String.t(), list(any), Keyword.t()) :: {:ok, any} | {:error, String.t()}
-  def add_or_update(index_uid, docs, opts \\ [])
+  def add_or_update(index_uid, docs, params \\ [])
 
-  def add_or_update(index_uid, doc, opts) when not is_list(doc) do
-    add_or_update(index_uid, [doc], opts)
+  def add_or_update(index_uid, doc, params) when not is_list(doc) do
+    add_or_update(index_uid, [doc], params)
   end
 
-  def add_or_update(index_uid, docs, opts) do
-    HTTP.put_request("indexes/#{index_uid}/documents", docs, [], params: opts)
+  def add_or_update(index_uid, docs, params) do
+    HTTP.put_request("indexes/#{index_uid}/documents", docs, [], params)
   end
 
   @doc """
