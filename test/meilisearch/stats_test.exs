@@ -1,20 +1,20 @@
 defmodule Meilisearch.StatsTest do
+  @moduledoc false
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Indexes, Stats}
+  alias Meilisearch.{Documents, Indexes, Stats}
 
   @test_index Meilisearch.Config.get(:test_index)
 
   setup do
     Indexes.delete(@test_index)
+    wait_for_task(Indexes.create(@test_index))
 
     :ok
   end
 
   test "get returns stats for given index" do
-    wait_for_task(Indexes.create(@test_index))
-
     assert {:ok,
             %{
               "numberOfDocuments" => _,
@@ -24,8 +24,6 @@ defmodule Meilisearch.StatsTest do
   end
 
   test "get_all returns stats for all indexes" do
-    wait_for_task(Indexes.create(@test_index))
-
     assert {:ok,
             %{
               "databaseSize" => _,

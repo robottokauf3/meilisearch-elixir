@@ -52,16 +52,7 @@ Meilisearch.Search.search("water")
 
 ### Available Modules
 
-- [X] Index
-- [X] Health
-- [X] Stats
-- [X] Version
-- [X] Documents
-- [X] Search
-- [X] Tasks
-- [X] Keys
-- [X] Settings
-- [X] System Information
+This API should enable you to call all API calls that are defined in the [API reference](https://docs.meilisearch.com/reference/api/overview.html).
 
 ## Config
 
@@ -89,6 +80,8 @@ MEILISEARCH_API_KEY=test_api_key_very_secure mix test
 The 1.0.X versions of this client have been tested against the following versions of Meilisearch:
   - v1.0.0
   - v1.0.1
+
+In general: Te minor versions of this client should be compatible to the same minor version of Meilisearch.
 
 ## Development
 

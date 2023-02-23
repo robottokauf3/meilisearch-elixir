@@ -88,13 +88,15 @@ defmodule Meilisearch.Tasks do
         }
       }
   """
-  @spec list(String.t() | [String.t()]) :: HTTP.response()
-  def list(index_uid) when is_list(index_uid) do
-    HTTP.get_request("tasks", [], indexUids: Enum.join(index_uid, ","))
+  @spec list(String.t() | Keyword.t()) :: HTTP.response()
+  def list(index_uid, params \\ [])
+
+  def list(params, []) when is_list(params) do
+    HTTP.get_request("tasks", [], params)
   end
 
-  def list(index_uid) do
-    HTTP.get_request("tasks", [], indexUids: index_uid)
+  def list(index_uid, params) when is_binary(index_uid) do
+    HTTP.get_request("tasks", [], Keyword.put_new(params, :indexUids, index_uid))
   end
 
   @doc """
@@ -102,6 +104,7 @@ defmodule Meilisearch.Tasks do
   ([ref.](https://docs.meilisearch.com/reference/api/tasks.html#get-task))
 
   ## Example
+
       iex> Meilisearch.Tasks.get(1)
       {:ok,
         %{
@@ -129,5 +132,87 @@ defmodule Meilisearch.Tasks do
   @spec get(String.t() | integer) :: HTTP.response()
   def get(task_uid) do
     HTTP.get_request("tasks/#{task_uid}")
+  end
+
+  @doc """
+  Cancel any number of enqueued or processing tasks based on their uid, status, type, indexUid, or
+  the date at which they were enqueued, processed, or completed.
+  Task cancelation is an atomic transaction: either all tasks are successfully canceled or none are.
+  ([ref.](https://docs.meilisearch.com/reference/api/tasks.html#cancel-tasks))
+
+  ## Example
+
+      iex> Meilisearch.Tasks.cancel(1)
+      {:ok, %{
+        "taskUid" => 3,
+        "indexUid" => null,
+        "status" => "enqueued",
+        "type" => "taskCancelation",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
+
+      iex> Meilisearch.Tasks.cancel(types: "documentDeletion,documentPartial")
+      {:ok, %{
+        "taskUid" => 3,
+        "indexUid" => null,
+        "status" => "enqueued",
+        "type" => "taskCancelation",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
+
+
+  """
+  @spec cancel(String.t() | Keyword.t()) :: HTTP.response()
+  def cancel(task_uid, params \\ [])
+
+  def cancel(params, []) when is_list(params) do
+    HTTP.post_request("tasks/cancel", nil, [], params)
+  end
+
+  def cancel(task_uid, params) do
+    HTTP.post_request(
+      "tasks/cancel",
+      nil,
+      [],
+      Keyword.put_new(params, :uids, "#{task_uid}")
+    )
+  end
+
+  @doc """
+  Delete a finished (succeeded, failed, or canceled) task based on uid, status, type, indexUid, canceledBy,
+  or date. Task deletion is an atomic transaction: either all tasks are successfully deleted, or none are.
+  ([ref.](https://docs.meilisearch.com/reference/api/tasks.html#delete-tasks))
+
+  ## Example
+
+      iex> Meilisearch.Tasks.delete(1)
+      {:ok, %{
+        "taskUid" => 3,
+        "indexUid" => null,
+        "status" => "enqueued",
+        "type" => "taskDeletion",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
+
+      iex> Meilisearch.Tasks.delete(status: "failed,canceled,succeeded")
+      {:ok, %{
+        "taskUid" => 3,
+        "indexUid" => null,
+        "status" => "enqueued",
+        "type" => "taskDeletion",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
+
+
+  """
+  @spec delete(String.t() | Keyword.t()) :: HTTP.response()
+  def delete(task_uid, params \\ [])
+
+  def delete(params, []) when is_list(params) do
+    HTTP.delete_request("tasks", [], params)
+  end
+
+  def delete(task_uid, params) do
+    HTTP.delete_request("tasks", [], Keyword.put_new(params, :uids, "#{task_uid}"))
   end
 end

@@ -22,25 +22,25 @@ defmodule Meilisearch.HTTP do
 
   @spec put_request(String.t(), any, any, Keyword.t()) :: response()
   def put_request(url, body, headers \\ [], params \\ []) do
-    Req.put(@req, url: url, headers: add_headers(headers), json: body)
+    Req.put(@req, url: url, headers: add_headers(headers), json: body, params: params)
     |> handle_response()
   end
 
   @spec patch_request(String.t(), any, any, Keyword.t()) :: response()
   def patch_request(url, body, headers \\ [], params \\ []) do
-    Req.patch(@req, url: url, headers: add_headers(headers), json: body)
+    Req.patch(@req, url: url, headers: add_headers(headers), json: body, params: params)
     |> handle_response()
   end
 
   @spec post_request(String.t(), any, any, Keyword.t()) :: response()
   def post_request(url, body, headers \\ [], params \\ []) do
-    Req.post(@req, url: url, headers: add_headers(headers), json: body)
+    Req.post(@req, url: url, headers: add_headers(headers), json: body, params: params)
     |> handle_response()
   end
 
   @spec delete_request(String.t(), any, Keyword.t()) :: response()
   def delete_request(url, headers \\ [], params \\ []) do
-    Req.delete(@req, url: url, headers: add_headers(headers))
+    Req.delete(@req, url: url, headers: add_headers(headers), params: params)
     |> handle_response()
   end
 
@@ -49,8 +49,9 @@ defmodule Meilisearch.HTTP do
   defp handle_response({:ok, %Req.Response{body: body, status: status_code}})
        when status_code in 400..599 do
     message =
-      case body do
+      case(body) do
         nil -> ""
+        "" -> ""
         body -> Map.get(body, "message")
       end
 

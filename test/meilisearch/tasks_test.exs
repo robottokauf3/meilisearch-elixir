@@ -1,13 +1,18 @@
 defmodule Meilisearch.TasksTest do
+  @moduledoc false
   use ExUnit.Case
 
   import Support.Helpers
   alias Meilisearch.{Documents, Indexes, Tasks}
 
   @test_index Meilisearch.Config.get(:test_index)
-  @another_index "another_test_index"
   @test_document %{
     id: 100,
+    title: "The Thing",
+    tagline: "Man is the warmest place to hide"
+  }
+  @test_document2 %{
+    id: 101,
     title: "The Thing",
     tagline: "Man is the warmest place to hide"
   }
@@ -16,12 +21,9 @@ defmodule Meilisearch.TasksTest do
     Indexes.delete(@test_index)
     {:ok, task} = Indexes.create(@test_index)
     wait_for_task(task)
-    {:ok, task} = Indexes.create(@another_index)
-    wait_for_task(task)
 
     on_exit(fn ->
       Indexes.delete(@test_index)
-      Indexes.delete(@another_index)
     end)
 
     :ok
@@ -53,8 +55,14 @@ defmodule Meilisearch.TasksTest do
   end
 
   describe "Tasks.list" do
-    test "returns list of tasks of one index" do
-      Documents.add_or_replace(@test_index, [@test_document])
+    setup do
+      {:ok, task} = Documents.add_or_replace(@test_index, [@test_document])
+      {:ok, task2} = Documents.add_or_replace(@test_index, [@test_document2])
+      wait_for_task(task2)
+      {:ok, task: task, task2: task2}
+    end
+
+    test "returns list of tasks of given index" do
       {:ok, %{"results" => [task | _]}} = Tasks.list(@test_index)
 
       assert %{
@@ -70,23 +78,13 @@ defmodule Meilisearch.TasksTest do
              } = task
     end
 
-    test "returns list of tasks of multiple indexes" do
-      Documents.add_or_replace(@test_index, [@test_document])
-      Documents.add_or_replace(@another_index, [@test_document])
-
-      {:ok, %{"results" => [task | [task2 | _]]}} = Tasks.list([@test_index, @another_index])
-
-      assert %{
-               "uid" => _,
-               "indexUid" => @another_index,
-               "status" => _,
-               "type" => _,
-               "details" => %{},
-               "duration" => _,
-               "enqueuedAt" => _,
-               "startedAt" => _,
-               "finishedAt" => _
-             } = task
+    test "returns list of tasks of given index with pagination", %{task: task} do
+      {:ok,
+       %{
+         "from" => _,
+         "limit" => 1,
+         "results" => [found_task | _]
+       }} = Tasks.list(@test_index, limit: 1, from: Map.get(task, "taskUid"))
 
       assert %{
                "uid" => _,
@@ -98,7 +96,88 @@ defmodule Meilisearch.TasksTest do
                "enqueuedAt" => _,
                "startedAt" => _,
                "finishedAt" => _
-             } = task2
+             } = found_task
+    end
+
+    test "returns list of tasks of all indices with pagination", %{task: task} do
+      {:ok,
+       %{
+         "from" => _,
+         "limit" => 1,
+         "results" => [found_task | _]
+       }} = Tasks.list(limit: 1, from: Map.get(task, "taskUid"))
+
+      assert %{
+               "uid" => _,
+               "indexUid" => @test_index,
+               "status" => _,
+               "type" => _,
+               "details" => %{},
+               "duration" => _,
+               "enqueuedAt" => _,
+               "startedAt" => _,
+               "finishedAt" => _
+             } = found_task
+    end
+  end
+
+  describe "Tasks.cancel" do
+    setup do
+      {:ok, task} = Documents.add_or_replace(@test_index, [@test_document])
+      {:ok, task: task}
+    end
+
+    test "cancels the task using uid", %{task: task} do
+      {:ok,
+       %{
+         "enqueuedAt" => _,
+         "indexUid" => nil,
+         "status" => "enqueued",
+         "taskUid" => _,
+         "type" => "taskCancelation"
+       }} = Tasks.cancel(Map.get(task, "taskUid"))
+    end
+
+    test "cancels all tasks using filter" do
+      {:ok,
+       %{
+         "enqueuedAt" => _,
+         "indexUid" => nil,
+         "status" => "enqueued",
+         "taskUid" => _,
+         "type" => "taskCancelation"
+       }} = Tasks.cancel(types: "documentAdditionOrUpdate,documentDeletion")
+    end
+  end
+
+  describe "Tasks.delete" do
+    setup do
+      {:ok, task} = Documents.add_or_replace(@test_index, [@test_document])
+      wait_for_task(task)
+
+      {:ok, task: task}
+    end
+
+    test "deletes the task using uid", %{task: task} do
+      {:ok,
+       %{
+         "enqueuedAt" => _,
+         "indexUid" => nil,
+         "status" => "enqueued",
+         "taskUid" => _,
+         "type" => "taskDeletion"
+       }} = Tasks.delete(Map.get(task, "taskUid"))
+    end
+
+    test "deletes all tasks using filter" do
+      {:ok,
+       %{
+         "enqueuedAt" => _,
+         "indexUid" => nil,
+         "status" => "enqueued",
+         "taskUid" => _,
+         "type" => "taskDeletion"
+       }} = Tasks.delete(indexUids: "some_index")
     end
   end
 end

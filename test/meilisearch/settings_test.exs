@@ -1,4 +1,5 @@
 defmodule Meilisearch.SettingsTest do
+  @moduledoc false
   use ExUnit.Case
 
   import Support.Helpers
@@ -10,9 +11,24 @@ defmodule Meilisearch.SettingsTest do
   @ranking_rules ["typo", "words", "proximity", "attribute"]
   @distinct_attribute "id"
   @searchable_attributes ["title"]
+  @faceting_settings %{"maxValuesPerFacet" => 99}
+  @pagination_settings %{"maxTotalHits" => 999}
+  @typo_tolerance_settings %{
+    "minWordSizeForTypos" => %{
+      "oneTypo" => 5,
+      "twoTypos" => 9
+    }
+  }
   @filterable_attributes ["title"]
   @sortable_attributes ["title"]
   @displayed_attributes ["title"]
+
+  @default_type_tolerance_settings %{
+    "disableOnAttributes" => [],
+    "disableOnWords" => [],
+    "enabled" => true,
+    "minWordSizeForTypos" => %{"oneTypo" => 5, "twoTypos" => 9}
+  }
 
   setup do
     Indexes.delete(@test_index)
@@ -224,6 +240,68 @@ defmodule Meilisearch.SettingsTest do
     assert {:ok, []} = Settings.get_sortable_attributes(@test_index)
   end
 
+  test "Settings.get_faceting_settings" do
+    assert {:ok, %{"maxValuesPerFacet" => 100}} = Settings.get_faceting_settings(@test_index)
+  end
+
+  test "Settings.update_faceting_settings" do
+    {:ok, task} =
+      Settings.update_faceting_settings(
+        @test_index,
+        @faceting_settings
+      )
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+    assert {:ok, @faceting_settings} = Settings.get_faceting_settings(@test_index)
+  end
+
+  test "Settings.reset_faceting_settings" do
+    wait_for_task(
+      Settings.update_faceting_settings(
+        @test_index,
+        @faceting_settings
+      )
+    )
+
+    {:ok, task} = Settings.reset_faceting_settings(@test_index)
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+    assert {:ok, %{"maxValuesPerFacet" => 100}} = Settings.get_faceting_settings(@test_index)
+  end
+
+  test "Settings.get_pagination_settings" do
+    assert {:ok, %{"maxTotalHits" => 1000}} = Settings.get_pagination_settings(@test_index)
+  end
+
+  test "Settings.update_pagination_settings" do
+    {:ok, task} =
+      Settings.update_pagination_settings(
+        @test_index,
+        @pagination_settings
+      )
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+    assert {:ok, @pagination_settings} = Settings.get_pagination_settings(@test_index)
+  end
+
+  test "Settings.reset_pagination_settings" do
+    wait_for_task(
+      Settings.update_pagination_settings(
+        @test_index,
+        @pagination_settings
+      )
+    )
+
+    {:ok, task} = Settings.reset_pagination_settings(@test_index)
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+    assert {:ok, %{"maxTotalHits" => 1000}} = Settings.get_pagination_settings(@test_index)
+  end
+
   test "Settings.get_filterable_attributes" do
     assert {:ok, []} = Settings.get_filterable_attributes(@test_index)
   end
@@ -246,5 +324,39 @@ defmodule Meilisearch.SettingsTest do
     wait_for_task(task)
     assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
     assert {:ok, []} = Settings.get_filterable_attributes(@test_index)
+  end
+
+  test "Settings.get_typo_tolerance_settings" do
+    assert {:ok, @default_type_tolerance_settings} =
+             Settings.get_typo_tolerance_settings(@test_index)
+  end
+
+  test "Settings.update_typo_tolerance_settings" do
+    {:ok, task} =
+      Settings.update_typo_tolerance_settings(
+        @test_index,
+        @typo_tolerance_settings
+      )
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+    assert {:ok, @typo_tolerance_settings} = Settings.get_typo_tolerance_settings(@test_index)
+  end
+
+  test "Settings.reset_typo_tolerance_settings" do
+    wait_for_task(
+      Settings.update_typo_tolerance_settings(
+        @test_index,
+        @typo_tolerance_settings
+      )
+    )
+
+    {:ok, task} = Settings.reset_typo_tolerance_settings(@test_index)
+
+    wait_for_task(task)
+    assert {:ok, %{"status" => "succeeded"}} = Tasks.get(Map.get(task, "taskUid"))
+
+    assert {:ok, @default_type_tolerance_settings} =
+             Settings.get_typo_tolerance_settings(@test_index)
   end
 end

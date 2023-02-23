@@ -1,4 +1,5 @@
 defmodule Meilisearch.HealthTest do
+  @moduledoc false
   use ExUnit.Case
 
   alias Meilisearch.Health

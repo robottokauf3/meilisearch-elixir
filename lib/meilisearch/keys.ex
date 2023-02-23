@@ -73,6 +73,8 @@ defmodule Meilisearch.Keys do
   ## Example
       iex> Meilisearch.Keys.get("d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4")
       {:ok, %{
+        "name" => nil,
+        "uid" => "6062abda-a5aa-4414-ac91-ecd7944c0f8d",
         "description" => "Manage documents: Products/Reviews API key",
         "key" => "d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4",
         "actions" => [
@@ -89,8 +91,8 @@ defmodule Meilisearch.Keys do
       }}
   """
   @spec get(String.t()) :: HTTP.response()
-  def get(key) do
-    HTTP.get_request("keys/#{key}")
+  def get(key_or_uid) do
+    HTTP.get_request("keys/#{key_or_uid}")
   end
 
   @doc """
@@ -107,8 +109,10 @@ defmodule Meilisearch.Keys do
         "expiresAt" => "2042-04-02T00:42:42Z"
       })
       {:ok, %{
+        "name" => nil,
         "description" => "Add documents: Products API key",
         "key" => "d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4",
+        "uid" => "6062abda-a5aa-4414-ac91-ecd7944c0f8d",
         "actions" => [
             "documents.add"
         ],
@@ -121,8 +125,8 @@ defmodule Meilisearch.Keys do
     }}
   """
   @spec create(any) :: HTTP.response()
-  def create(opts) do
-    HTTP.post_request("keys", opts)
+  def create(body) do
+    HTTP.post_request("keys", body)
   end
 
   @doc """
@@ -143,8 +147,10 @@ defmodule Meilisearch.Keys do
         "expiresAt" => "2042-04-02T00:42:42Z"
       })
       {:ok, %{
+        "name" => nil,
         "description" => "Manage documents: Products/Reviews API key",
         "key" => "d0552b41536279a0ad88bd595327b96f01176a60c2243e906c52ac02375f9bc4",
+        "uid" => "6062abda-a5aa-4414-ac91-ecd7944c0f8d",
         "actions" => [
             "documents.add",
             "documents.delete"
@@ -159,8 +165,8 @@ defmodule Meilisearch.Keys do
       }}
   """
   @spec update(String.t(), any) :: HTTP.response()
-  def update(key, opts) do
-    HTTP.patch_request("keys/#{key}", opts)
+  def update(key_or_uid, body) do
+    HTTP.patch_request("keys/#{key_or_uid}", body)
   end
 
   @doc """
@@ -172,7 +178,7 @@ defmodule Meilisearch.Keys do
       {:ok, nil}
   """
   @spec delete(String.t()) :: HTTP.response()
-  def delete(key) do
-    HTTP.delete_request("keys/#{key}")
+  def delete(key_or_uid) do
+    HTTP.delete_request("keys/#{key_or_uid}") |> IO.inspect()
   end
 end

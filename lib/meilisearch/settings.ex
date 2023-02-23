@@ -258,6 +258,62 @@ defmodule Meilisearch.Settings do
   end
 
   @doc """
+  Get faceting settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#get-faceting-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.get_faceting_settings("movies")
+      {:ok, %{
+        "maxValuesPerFacet": 100
+      }}
+  """
+  @spec get_faceting_settings(String.t()) :: HTTP.response()
+  def get_faceting_settings(index_uid) do
+    HTTP.get_request("indexes/#{index_uid}/settings/faceting")
+  end
+
+  @doc """
+  Update faceting settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#update-faceting-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.update_faceting_settings("movies")
+      {:ok, %{
+        "enqueuedAt" => "2023-02-23T09:53:35.076462938Z",
+        "indexUid" => "meilisearch_test_index",
+        "status" => "enqueued",
+        "taskUid" => 3910,
+        "type" => "settingsUpdate"
+      }}
+  """
+  @spec update_faceting_settings(String.t(), map()) :: HTTP.response()
+  def update_faceting_settings(index_uid, body) do
+    HTTP.patch_request("indexes/#{index_uid}/settings/faceting", body)
+  end
+
+  @doc """
+  Reset faceting settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#reset-faceting-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.reset_faceting_settings("movies")
+      {:ok, %{
+        "enqueuedAt" => "2023-02-23T09:53:35.185491246Z",
+        "indexUid" => "meilisearch_test_index",
+        "status" => "enqueued",
+        "taskUid" => 3911,
+        "type" => "settingsUpdate"
+      }}
+  """
+  @spec reset_faceting_settings(String.t()) :: HTTP.response()
+  def reset_faceting_settings(index_uid) do
+    HTTP.delete_request("indexes/#{index_uid}/settings/faceting")
+  end
+
+  @doc """
   Get filterable attributes.
   ([ref.](https://docs.meilisearch.com/reference/api/filterable_attributes.html#get-filterable-attributes))
 
@@ -318,6 +374,62 @@ defmodule Meilisearch.Settings do
   @spec reset_filterable_attributes(String.t()) :: HTTP.response()
   def reset_filterable_attributes(index_uid) do
     HTTP.delete_request("indexes/#{index_uid}/settings/filterable-attributes")
+  end
+
+  @doc """
+  Get pagination settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#get-pagination-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.get_pagination_settings("movies")
+      {:ok, %{
+        "maxTotalHits": 1000
+      }}
+  """
+  @spec get_pagination_settings(String.t()) :: HTTP.response()
+  def get_pagination_settings(index_uid) do
+    HTTP.get_request("indexes/#{index_uid}/settings/pagination")
+  end
+
+  @doc """
+  Update pagination settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#update-pagination-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.update_pagination_settings("movies")
+      {:ok, %{
+        "enqueuedAt" => "2023-02-23T09:53:35.076462938Z",
+        "indexUid" => "meilisearch_test_index",
+        "status" => "enqueued",
+        "taskUid" => 3910,
+        "type" => "settingsUpdate"
+      }}
+  """
+  @spec update_pagination_settings(String.t(), map()) :: HTTP.response()
+  def update_pagination_settings(index_uid, body) do
+    HTTP.patch_request("indexes/#{index_uid}/settings/pagination", body)
+  end
+
+  @doc """
+  Reset pagination settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#reset-pagination-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.reset_pagination_settings("movies")
+      {:ok, %{
+        "enqueuedAt" => "2023-02-23T09:53:35.185491246Z",
+        "indexUid" => "meilisearch_test_index",
+        "status" => "enqueued",
+        "taskUid" => 3911,
+        "type" => "settingsUpdate"
+      }}
+  """
+  @spec reset_pagination_settings(String.t()) :: HTTP.response()
+  def reset_pagination_settings(index_uid) do
+    HTTP.delete_request("indexes/#{index_uid}/settings/pagination")
   end
 
   @doc """
@@ -648,5 +760,75 @@ defmodule Meilisearch.Settings do
   @spec reset_synonyms(String.t()) :: HTTP.response()
   def reset_synonyms(index_uid) do
     HTTP.delete_request("indexes/#{index_uid}/settings/synonyms")
+  end
+
+  @doc """
+  Get typo tolerance settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#get-typo-tolerance-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.get_typo_tolerance_settings("movies")
+      {:ok, %{
+        "enabled" => true,
+        "minWordSizeForTypos" => %{
+          "oneTypo" => 5,
+          "twoTypos" => 9
+        },
+        "disableOnWords" => [],
+        "disableOnAttributes" => []
+      }}
+  """
+  @spec get_typo_tolerance_settings(String.t()) :: HTTP.response()
+  def get_typo_tolerance_settings(index_uid) do
+    HTTP.get_request("indexes/#{index_uid}/settings/typo-tolerance")
+  end
+
+  @doc """
+  Update typo tolerance settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#update-typo-tolerance-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.update_typo_tolerance_settings("movies", %{
+        "enabled" => true,
+        "minWordSizeForTypos" => %{
+          "oneTypo" => 5,
+          "twoTypos" => 9
+        },
+        "disableOnWords" => [],
+        "disableOnAttributes" => []
+      })
+      {:ok, %{
+        "taskUid" => 1,
+        "indexUid" => "movies",
+        "status" => "enqueued",
+        "type" => "settingsUpdate",
+        "enqueuedAt" => "2021-08-11T09:25:53.000000Z"
+      }}
+  """
+  @spec update_typo_tolerance_settings(String.t(), any()) :: HTTP.response()
+  def update_typo_tolerance_settings(index_uid, settings) do
+    HTTP.patch_request("indexes/#{index_uid}/settings/typo-tolerance", settings)
+  end
+
+  @doc """
+  Reset typo tolerance settings.
+  ([ref.](https://docs.meilisearch.com/reference/api/settings.html#reset-typo-tolerance-settings))
+
+  ## Example
+
+      iex> Meilisearch.Settings.reset_typo_tolerance_settings("movies")
+      {:ok, %{
+        "taskUid" => 1,
+        "indexUid" => "movies",
+        "status" => "enqueued",
+        "type" => "settingsUpdate",
+        "enqueuedAt" => "2021-08-11T09:25:53.000000Z"
+      }}
+  """
+  @spec reset_typo_tolerance_settings(String.t()) :: HTTP.response()
+  def reset_typo_tolerance_settings(index_uid) do
+    HTTP.delete_request("indexes/#{index_uid}/settings/typo-tolerance")
   end
 end

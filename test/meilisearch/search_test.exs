@@ -1,4 +1,5 @@
 defmodule Meilisearch.SearchTest do
+  @moduledoc false
   use ExUnit.Case
 
   import Support.Helpers
