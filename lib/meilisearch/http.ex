@@ -14,33 +14,33 @@ defmodule Meilisearch.HTTP do
 
   # Client API
 
-  @spec get_request(String.t(), any, Keyword.t()) :: response()
-  def get_request(url, headers \\ [], params \\ []) do
-    Req.get(@req, url: url, headers: add_headers(headers), params: params)
+  @spec get_request(String.t(), Keyword.t()) :: response()
+  def get_request(url, params \\ []) do
+    Req.get(@req, url: url, headers: build_headers(), params: params)
     |> handle_response()
   end
 
-  @spec put_request(String.t(), any, any, Keyword.t()) :: response()
-  def put_request(url, body, headers \\ [], params \\ []) do
-    Req.put(@req, url: url, headers: add_headers(headers), json: body, params: params)
+  @spec put_request(String.t(), any, Keyword.t()) :: response()
+  def put_request(url, body, params \\ []) do
+    Req.put(@req, url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
-  @spec patch_request(String.t(), any, any, Keyword.t()) :: response()
-  def patch_request(url, body, headers \\ [], params \\ []) do
-    Req.patch(@req, url: url, headers: add_headers(headers), json: body, params: params)
+  @spec patch_request(String.t(), any, Keyword.t()) :: response()
+  def patch_request(url, body, params \\ []) do
+    Req.patch(@req, url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
-  @spec post_request(String.t(), any, any, Keyword.t()) :: response()
-  def post_request(url, body, headers \\ [], params \\ []) do
-    Req.post(@req, url: url, headers: add_headers(headers), json: body, params: params)
+  @spec post_request(String.t(), any, Keyword.t()) :: response()
+  def post_request(url, body, params \\ []) do
+    Req.post(@req, url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
-  @spec delete_request(String.t(), any, Keyword.t()) :: response()
-  def delete_request(url, headers \\ [], params \\ []) do
-    Req.delete(@req, url: url, headers: add_headers(headers), params: params)
+  @spec delete_request(String.t(), Keyword.t()) :: response()
+  def delete_request(url, params \\ []) do
+    Req.delete(@req, url: url, headers: build_headers(), params: params)
     |> handle_response()
   end
 
@@ -66,8 +66,8 @@ defmodule Meilisearch.HTTP do
     {:error, nil, reason}
   end
 
-  defp add_headers(headers) do
-    headers |> add_content_type_header() |> add_auth_header()
+  defp build_headers do
+    [] |> add_content_type_header() |> add_auth_header()
   end
 
   defp add_content_type_header(headers) do

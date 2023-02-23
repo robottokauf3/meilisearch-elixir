@@ -90,7 +90,7 @@ defmodule Meilisearch.Documents do
   """
   @spec list(String.t(), Keyword.t()) :: HTTP.response()
   def list(index_uid, params \\ []) do
-    HTTP.get_request("indexes/#{index_uid}/documents", [], params)
+    HTTP.get_request("indexes/#{index_uid}/documents", params)
   end
 
   @doc """
@@ -146,7 +146,7 @@ defmodule Meilisearch.Documents do
   end
 
   def add_or_replace(index_uid, docs, params) do
-    HTTP.post_request("indexes/#{index_uid}/documents", docs, [], params)
+    HTTP.post_request("indexes/#{index_uid}/documents", docs, params)
   end
 
   @doc """
@@ -201,7 +201,7 @@ defmodule Meilisearch.Documents do
   end
 
   def add_or_update(index_uid, docs, params) do
-    HTTP.put_request("indexes/#{index_uid}/documents", docs, [], params)
+    HTTP.put_request("indexes/#{index_uid}/documents", docs, params)
   end
 
   @doc """

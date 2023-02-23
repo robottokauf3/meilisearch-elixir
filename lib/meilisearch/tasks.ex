@@ -92,11 +92,11 @@ defmodule Meilisearch.Tasks do
   def list(index_uid, params \\ [])
 
   def list(params, []) when is_list(params) do
-    HTTP.get_request("tasks", [], params)
+    HTTP.get_request("tasks", params)
   end
 
   def list(index_uid, params) when is_binary(index_uid) do
-    HTTP.get_request("tasks", [], Keyword.put_new(params, :indexUids, index_uid))
+    HTTP.get_request("tasks", Keyword.put_new(params, :indexUids, index_uid))
   end
 
   @doc """
@@ -166,16 +166,11 @@ defmodule Meilisearch.Tasks do
   def cancel(task_uid, params \\ [])
 
   def cancel(params, []) when is_list(params) do
-    HTTP.post_request("tasks/cancel", nil, [], params)
+    HTTP.post_request("tasks/cancel", nil, params)
   end
 
   def cancel(task_uid, params) do
-    HTTP.post_request(
-      "tasks/cancel",
-      nil,
-      [],
-      Keyword.put_new(params, :uids, "#{task_uid}")
-    )
+    HTTP.post_request("tasks/cancel", nil, Keyword.put_new(params, :uids, "#{task_uid}"))
   end
 
   @doc """
@@ -209,10 +204,10 @@ defmodule Meilisearch.Tasks do
   def delete(task_uid, params \\ [])
 
   def delete(params, []) when is_list(params) do
-    HTTP.delete_request("tasks", [], params)
+    HTTP.delete_request("tasks", params)
   end
 
   def delete(task_uid, params) do
-    HTTP.delete_request("tasks", [], Keyword.put_new(params, :uids, "#{task_uid}"))
+    HTTP.delete_request("tasks", Keyword.put_new(params, :uids, "#{task_uid}"))
   end
 end
