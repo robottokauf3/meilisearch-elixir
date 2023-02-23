@@ -179,6 +179,6 @@ defmodule Meilisearch.Keys do
   """
   @spec delete(String.t()) :: HTTP.response()
   def delete(key_or_uid) do
-    HTTP.delete_request("keys/#{key_or_uid}") |> IO.inspect()
+    HTTP.delete_request("keys/#{key_or_uid}")
   end
 end

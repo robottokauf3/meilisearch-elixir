@@ -2,7 +2,6 @@ defmodule Meilisearch.KeysTest do
   @moduledoc false
   use ExUnit.Case
 
-  import Support.Helpers
   alias Meilisearch.Keys
 
   @custom_uid "00813f43-66ec-4316-aa15-f908e92a5fff"
@@ -112,8 +111,6 @@ defmodule Meilisearch.KeysTest do
                 "createdAt" => _,
                 "updatedAt" => _
               }} = Keys.update(@custom_uid, @valid_key_update_data)
-
-      {:ok, %{"results" => keys}} = Keys.list()
     end
 
     test "updates a key via key field", %{key: key} do

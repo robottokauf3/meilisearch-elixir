@@ -3,7 +3,7 @@ defmodule Meilisearch.StatsTest do
   use ExUnit.Case
 
   import Support.Helpers
-  alias Meilisearch.{Documents, Indexes, Stats}
+  alias Meilisearch.{Indexes, Stats}
 
   @test_index Meilisearch.Config.get(:test_index)
 
