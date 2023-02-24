@@ -81,7 +81,7 @@ The 1.0.X versions of this client have been tested against the following version
   - v1.0.0
   - v1.0.1
 
-In general: Te minor versions of this client should be compatible to the same minor version of Meilisearch.
+In general: The minor versions of this client should be compatible to the same minor version of Meilisearch.
 
 ## Development
 
