@@ -18,7 +18,7 @@ defmodule Meilisearch.Config do
   end
 
   def connect_options do
-    get(:connect_options, @default_connect_options)
+    Application.get_env(:meilisearch, :connect_options, @default_connect_options)
   end
 
   @spec get(atom, String.t()) :: nil | String.t()
