@@ -10,41 +10,48 @@ defmodule Meilisearch.HTTP do
 
   @type response :: success | error
 
-  @req Req.new(
-         base_url: Meilisearch.Config.endpoint(),
-         connect_options: Meilisearch.Config.connect_options()
-       )
-
   # Client API
 
   @spec get_request(String.t(), Keyword.t()) :: response()
   def get_request(url, params \\ []) do
-    Req.get(@req, url: url, headers: build_headers(), params: params)
+    client()
+    |> Req.get(url: url, headers: build_headers(), params: params)
     |> handle_response()
   end
 
   @spec put_request(String.t(), any, Keyword.t()) :: response()
   def put_request(url, body, params \\ []) do
-    Req.put(@req, url: url, headers: build_headers(), json: body, params: params)
+    client()
+    |> Req.put(url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
   @spec patch_request(String.t(), any, Keyword.t()) :: response()
   def patch_request(url, body, params \\ []) do
-    Req.patch(@req, url: url, headers: build_headers(), json: body, params: params)
+    client()
+    |> Req.patch(url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
   @spec post_request(String.t(), any, Keyword.t()) :: response()
   def post_request(url, body, params \\ []) do
-    Req.post(@req, url: url, headers: build_headers(), json: body, params: params)
+    client()
+    |> Req.post(url: url, headers: build_headers(), json: body, params: params)
     |> handle_response()
   end
 
   @spec delete_request(String.t(), Keyword.t()) :: response()
   def delete_request(url, params \\ []) do
-    Req.delete(@req, url: url, headers: build_headers(), params: params)
+    client()
+    |> Req.delete(url: url, headers: build_headers(), params: params)
     |> handle_response()
+  end
+
+  def client do
+    Req.new(
+      base_url: Meilisearch.Config.endpoint(),
+      connect_options: Meilisearch.Config.connect_options()
+    )
   end
 
   # Utils
