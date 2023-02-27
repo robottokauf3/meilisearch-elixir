@@ -8,6 +8,7 @@ defmodule Meilisearch.Search do
 
   @doc """
   Search for documents matching a specific query in the given index.
+  ([ref.](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-post-route))
 
   A `search_query` value of `nil` will send a placeholder query.
 
@@ -15,13 +16,21 @@ defmodule Meilisearch.Search do
 
     * `offset` 	Number of documents to skip.  Defaults to `0`
     * `limit` 	Maximum number of documents returned.  Defaults to `20`
+    * `filter` 	Filter queries by an attribute value.  Defaults to `nil`
+    * `facetsDistribution` 	Facets for which to retrieve the matching count.  Defaults to `nil`
+    * `attributesToRetrieve` 	Attributes to display in the returned documents.  Defaults to `["*"]`
+    * `attributesToCrop` 	Attributes whose values have to be cropped.  Defaults to `nil`
+    * `cropLength` 	Length used to crop field values.  Defaults to `200`
+    * `attributesToHighlight` 	Attributes whose values will contain highlighted matching terms.  Defaults to `nil`
+    * `matches` 	Defines whether an object that contains information about the matches should be returned or not.  Defaults to `false`
+    * `sort` 	Sort search results according to the attributes and sorting order (asc or desc) specified.  Defaults to `nil`
+    * `page` 	Setting page results in more accurate paginated search results. Page is the page to show of course.  Defaults to `nil`
+    * `hitsPerPage` 	Setting hitsPerPage results in more accurate paginated search results. HitsPerPage is the number of entries shown on a page.  Defaults to `nil`
 
   ## Examples
 
-      iex> Meilisearch.Search.search("meilisearch_test", "where art thou")
-      {:ok,
-      %{
-        "exhaustiveNbHits" => false,
+      iex> Meilisearch.Search.search("movies", "where art thou")
+      {:ok, %{
         "hits" => [
           %{
             "id" => 2,
@@ -29,33 +38,67 @@ defmodule Meilisearch.Search do
             "title" => "O' Brother Where Art Thou"
           }
         ],
+        "offset" => 0,
         "limit" => 20,
         "nbHits" => 1,
-        "offset" => 0,
+        "exhaustiveNbHits" => false,
         "processingTimeMs" => 17,
         "query" => "where art thou"
       }}
 
-      iex> Meilisearch.Search.search("meilisearch_test", "nothing will match")
-      {:ok,
-      %{
+      iex> Meilisearch.Search.search("movies", nil, filter: "id = 2")
+      {:ok, %{
+        "hits" => [
+          %{
+            "id" => 2,
+            "tagline" => "They have a plan but not a clue",
+            "title" => "O' Brother Where Art Thou"
+          }
+        ],
+        "offset" => 0,
+        "limit" => 20,
+        "nbHits" => 1,
         "exhaustiveNbHits" => false,
+        "processingTimeMs" => 17,
+        "query" => "where art thou"
+      }}
+
+      iex> Meilisearch.Search.search("movies", nil, filter: "id = 2", page: 1, hitsPerPage: 10)
+      {:ok, %{
+        "hits" => [
+          %{
+            "id" => 2,
+            "tagline" => "They have a plan but not a clue",
+            "title" => "O' Brother Where Art Thou"
+          }
+        ],
+        "page" => 1,
+        "hitsPerPage" => 10,
+        "totalHits" => 1,
+        "totalPages" => 1,
+        "processingTimeMs" => 17,
+        "query" => "where art thou"
+      }}
+
+      iex> Meilisearch.Search.search("movies", "nothing will match")
+      {:ok, %{
         "hits" => [],
+        "offset" => 0,
         "limit" => 20,
         "nbHits" => 0,
-        "offset" => 0,
+        "exhaustiveNbHits" => false,
         "processingTimeMs" => 27,
         "query" => "nothing will match"
       }}
   """
   @spec search(String.t(), String.t() | nil, Keyword.t()) :: HTTP.response()
-  def search(uid, search_query, opts \\ []) do
+  def search(index_uid, search_query, opts \\ []) do
     params =
       case search_query do
         nil -> opts
         q -> [{:q, q} | opts]
       end
 
-    HTTP.get_request("indexes/#{uid}/search", [], params: params)
+    HTTP.post_request("indexes/#{index_uid}/search", Enum.into(params, %{}))
   end
 end

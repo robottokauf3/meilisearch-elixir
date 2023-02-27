@@ -1,7 +1,7 @@
 defmodule Meilisearch.MixProject do
   use Mix.Project
 
-  @version "0.20.0"
+  @version "1.0.0"
   @github_url "https://github.com/robottokauf3/meilisearch-elixir"
 
   def project do
@@ -28,17 +28,17 @@ defmodule Meilisearch.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :httpoison]
+      extra_applications: [:logger]
     ]
   end
 
   defp deps do
     [
-      {:httpoison, "~> 1.8"},
+      {:req, "~> 0.3"},
       {:jason, "~> 1.2"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.14.0", only: [:test]},
+      {:excoveralls, "~> 0.15.0", only: [:test]},
       {:ex_doc, "~> 0.25", only: [:dev], runtime: false},
       {:mix_test_watch, "~> 1.1", only: :dev, runtime: false}
     ]
@@ -70,10 +70,7 @@ defmodule Meilisearch.MixProject do
       name: "MeiliSearch",
       source_ref: "v#{@version}",
       source_url: @github_url,
-      extras: [
-        "README.md",
-        "CHANGELOG.md"
-      ]
+      extras: ["README.md"]
     ]
   end
 

@@ -1,11 +1,12 @@
 defmodule Meilisearch.HealthTest do
+  @moduledoc false
   use ExUnit.Case
 
   alias Meilisearch.Health
 
   describe "Health.get" do
-    test "returns `{:ok, _}` when instance is healthy" do
-      assert {:ok, _} = Health.get()
+    test ~s(returns `{:ok, %{"status" => "available"}}` when instance is healthy) do
+      assert {:ok, %{"status" => "available"}} = Health.get()
     end
   end
 

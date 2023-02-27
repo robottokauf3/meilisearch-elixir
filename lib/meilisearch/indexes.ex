@@ -8,20 +8,31 @@ defmodule Meilisearch.Indexes do
   alias Meilisearch.HTTP
 
   @doc """
-  List all indexes
+  List all indexes.
+  ([ref.](https://docs.meilisearch.com/reference/api/indexes.html#list-all-indexes))
 
   ## Example
 
       iex> Meilisearch.Indexes.list()
-      {:ok, [
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => nil,
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
-        }
-      ]}
+      {:ok, %{
+        "limit" => 20,
+        "offset" => 0,
+        "results" => [
+          %{
+            "uid" => "movies",
+            "primaryKey" => "movie_id",
+            "createdAt" => "2019-11-20T09:40:33.711324Z",
+            "updatedAt" => "2019-11-20T10:16:42.761858Z"
+          },
+          %{
+            "uid" => "movie_reviews",
+            "primaryKey" => nil,
+            "createdAt" => "2019-11-20T09:40:33.711324Z",
+            "updatedAt" => "2019-11-20T10:16:42.761858Z"
+          }
+        ],
+        "total" => 2
+      }}
 
   """
   @spec list :: HTTP.response()
@@ -30,20 +41,18 @@ defmodule Meilisearch.Indexes do
   end
 
   @doc """
-  Get information about an index
+  Get information about an index.
+  ([ref.](https://docs.meilisearch.com/reference/api/indexes.html#get-one-index))
 
   ## Example
 
       iex> Meilisearch.Indexes.get("meilisearch_test")
-      {:ok,
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => nil,
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
-        }
-      }
+      {:ok, %{
+        "uid" => "movies",
+        "primaryKey" => "movie_id",
+        "createdAt" => "2019-11-20T09:40:33.711324Z",
+        "updatedAt" => "2019-11-20T10:16:42.761858Z"
+      }}
 
   """
   @spec get(String.t()) :: HTTP.response()
@@ -52,33 +61,30 @@ defmodule Meilisearch.Indexes do
   end
 
   @doc """
-  Create an index
+  Create an index.
+  ([ref.](https://docs.meilisearch.com/reference/api/indexes.html#create-an-index))
 
   `primary_key` can be passed as an option.
 
   ## Examples
 
-      iex> Meilisearch.Indexes.create("meilisearch_test")
-      {:ok,
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => nil,
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
-        }
-      }
+      iex> Meilisearch.Indexes.create("movies")
+      {:ok, %{
+        "taskUid" => 0,
+        "indexUid" => "movies",
+        "status" => "enqueued",
+        "type" => "indexCreation",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
 
-      iex> Meilisearch.create("meilisearch_test", primary_key: "key_name")
-      {:ok,
-        %{
-          "createdAt" => "2020-05-23T06:20:18.394281328Z",
-          "name" => "meilisearch_test",
-          "primaryKey" => "key_name",
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-23T06:20:18.394292399Z"
-        }
-      }
+      iex> Meilisearch.create("movies", primary_key: "movie_id")
+      {:ok, %{
+        "taskUid" => 0,
+        "indexUid" => "movies",
+        "status" => "enqueued",
+        "type" => "indexCreation",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
   """
   @spec create(String.t(), Keyword.t()) :: HTTP.response()
   def create(uid, opts \\ []) do
@@ -91,40 +97,48 @@ defmodule Meilisearch.Indexes do
   end
 
   @doc """
-  Update an index with new primary key.  Will fail if primary key has already been set
+  Update an index with new primary key.
+  ([ref.](https://docs.meilisearch.com/reference/api/indexes.html#update-an-index))
+
+  Will fail if primary key has already been set and index already contains documents.
 
   `primary_key` option is required.
 
   ## Examples
 
-      iex> Meilisearch.Indexes.update("meilisearch_test", primary_key: "new_key")
-      {:ok,
-        %{
-          "primaryKey" => "new_primary_key",
-          "createdAt" => "2020-05-25T04:30:10.681720067Z",
-          "name" => "meilisearch_test",
-          "uid" => "meilisearch_test",
-          "updatedAt" => "2020-05-25T04:30:10.685540577Z"
-        }
-      }
+      iex> Meilisearch.Indexes.update("movie_review", primary_key: "movie_review_id")
+      {:ok, %{
+        "taskUid" => 1,
+        "indexUid" => "movie_review",
+        "status" => "enqueued",
+        "type" => "indexUpdate",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
   """
   @spec update(String.t(), primary_key: String.t()) :: HTTP.response()
   def update(uid, opts \\ []) do
     with {:ok, primary_key} <- Keyword.fetch(opts, :primary_key),
          body <- %{primaryKey: primary_key} do
-      HTTP.put_request("indexes/#{uid}", body)
+      HTTP.patch_request("indexes/#{uid}", body)
     else
-      _ -> {:error, "primary_key is required"}
+      _ -> {:error, 400, "primary_key is required"}
     end
   end
 
   @doc """
-  Delete an index
+  Delete an index.
+  ([ref.](https://docs.meilisearch.com/reference/api/indexes.html#delete-an-index))
 
   ## Examples
 
-      iex> Meilisearch.Indexes.delete("meilisearch_test")
-      {:ok, nil}
+      iex> Meilisearch.Indexes.delete("movies")
+      {:ok, %{
+        "taskUid" => 1,
+        "indexUid" => "movies",
+        "status" => "enqueued",
+        "type" => "indexDeletion",
+        "enqueuedAt" => "2021-08-12T10:00:00.000000Z"
+      }}
 
       iex> Meilisearch.delete("nonexistent_index")
       {:error, 404, Index meilisearch_test not found"}
@@ -139,10 +153,10 @@ defmodule Meilisearch.Indexes do
 
   ## Examples
 
-      iex> Meilisearch.Indexes.exists?("meilisearch_test")
+      iex> Meilisearch.Indexes.exists?("movies")
       {:ok, true}
 
-      iex> Meilisearch.Indexes.exists?("nonexistent_index")
+      iex> Meilisearch.Indexes.exists?("movies_index_that_does_not_exists")
       {:ok, false}
   """
   @spec exists?(String.t()) :: {:ok, true | false} | {:error, String.t()}

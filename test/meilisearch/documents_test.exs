@@ -1,4 +1,5 @@
 defmodule Meilisearch.DocumentsTest do
+  @moduledoc false
   use ExUnit.Case
 
   import Support.Helpers
@@ -13,49 +14,43 @@ defmodule Meilisearch.DocumentsTest do
 
   setup do
     Indexes.delete(@test_index)
-    Indexes.create(@test_index)
+    wait_for_task(Indexes.create(@test_index))
 
     on_exit(fn ->
       Indexes.delete(@test_index)
     end)
 
-    :timer.sleep(100)
-
     :ok
   end
 
   test "Documents.add_or_replace" do
-    {:ok, update} = Documents.add_or_replace(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert wait_for_task_success(Documents.add_or_replace(@test_index, @test_document))
+    assert {:ok, %{"id" => 1}} = Documents.get(@test_index, @test_document.id)
   end
 
   test "Documents.add_or_update" do
-    {:ok, update} = Documents.add_or_update(@test_index, @test_document)
-    assert Map.has_key?(update, "updateId")
-
-    wait_for_update(@test_index, Map.get(update, "updateId"))
+    assert wait_for_task_success(Documents.add_or_update(@test_index, @test_document))
+    assert {:ok, %{"id" => 1}} = Documents.get(@test_index, @test_document.id)
   end
 
   describe "existing document" do
     setup do
-      Documents.add_or_replace(@test_index, @test_document)
-
-      :timer.sleep(100)
+      wait_for_task(Documents.add_or_replace(@test_index, @test_document))
 
       :ok
     end
 
     test "Documents.get" do
       {:ok, document} = Documents.get(@test_index, 1)
+
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"
       assert Map.get(document, "tagline") == "In space no one can hear you scream"
     end
 
     test "Documents.list" do
-      {:ok, [document | _]} = Documents.list(@test_index)
+      {:ok, response} = Documents.list(@test_index)
+      %{"limit" => 20, "offset" => 0, "results" => [document | _], "total" => 1} = response
 
       assert Map.get(document, "id") == 1
       assert Map.get(document, "title") == "Alien"

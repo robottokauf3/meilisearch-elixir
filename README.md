@@ -12,7 +12,7 @@ by adding `meilisearch` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:meilisearch, "~> 0.20.0"}
+    {:meilisearch, "~> 1.0.0"}
   ]
 end
 ```
@@ -21,10 +21,10 @@ end
 
 ```elixir
 # Create Index
-Meilisearch.Index.create("index_name")
+Meilisearch.Indexes.create("index_name")
 
 # Create Index and set primary key
-Meilisearch.Index.create("index_name", primary_key: "key_name")
+Meilisearch.Indexes.create("index_name", primary_key: "key_name")
 
 # Insert documents
 documents = [
@@ -52,16 +52,7 @@ Meilisearch.Search.search("water")
 
 ### Available Modules
 
-- [X] Index
-- [X] Health
-- [X] Stats
-- [X] Version
-- [X] Documents
-- [X] Search
-- [X] Updates
-- [X] Keys
-- [X] Settings
-- [X] System Information
+This API should enable you to call all API calls that are defined in the [API reference](https://docs.meilisearch.com/reference/api/overview.html).
 
 ## Config
 
@@ -81,23 +72,31 @@ config :meilisearch,
 
 ```shell
 MEILISEARCH_ENDPOINT=http://localhost:7700 mix test
-MEILISEARCH_API_KEY=test_api_key mix test
+MEILISEARCH_API_KEY=test_api_key_very_secure mix test
 ```
 
 ## Compatibility
 
-The 0.20.X versions of this client have been tested against the following versions of Meilisearch:
-  - v0.20.0
-  - v0.19.0
-  - v0.18.1
-  - v0.17.0
+The 1.0.X versions of this client have been tested against the following versions of Meilisearch:
+  - v1.0.0
+  - v1.0.1
+
+In general: The minor versions of this client should be compatible to the same minor version of Meilisearch.
 
 ## Development
 
-You will need  Meilisearch running locally for development and testing.  You can do this via Docker:
+You will need  Meilisearch running locally for development and testing. You can do this via Docker:
 
 ```
-$ docker run -it --rm -p 7700:7700 getmeili/meilisearch:latest ./meilisearch --master-key=test_api_key
+$ docker run -it --rm -p 7700:7700 -e MEILI_MASTER_KEY=test_api_key_very_secure getmeili/meilisearch:latest /bin/sh -c /bin/meilisearch
+```
+
+Or using the provided devcontainer configuration.
+
+And then just run your tests, as you usual would: 
+
+```
+$ mix test
 ```
 
 ## License
