@@ -10,7 +10,10 @@ defmodule Meilisearch.HTTP do
 
   @type response :: success | error
 
-  @req Req.new(base_url: Meilisearch.Config.endpoint())
+  @req Req.new(
+         base_url: Meilisearch.Config.endpoint(),
+         connect_options: Meilisearch.Config.connect_options()
+       )
 
   # Client API
 
