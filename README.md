@@ -44,7 +44,7 @@ documents = [
     "title" => "The Fly"
   }
 ]
-Meilisearch.Document.add_or_replace("index_name", documents)
+Meilisearch.Documents.add_or_replace("index_name", documents)
 
 # Search
 Meilisearch.Search.search("water")
