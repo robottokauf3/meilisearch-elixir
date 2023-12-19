@@ -5,6 +5,7 @@ defmodule Meilisearch.Config do
 
   @default_endpoint "http://127.0.0.1:7700"
   @default_api_key ""
+  @default_connect_options []
 
   @spec endpoint :: String.t()
   def endpoint do
@@ -14,6 +15,10 @@ defmodule Meilisearch.Config do
   @spec api_key :: String.t()
   def api_key do
     get(:api_key, @default_api_key)
+  end
+
+  def connect_options do
+    Application.get_env(:meilisearch, :connect_options, @default_connect_options)
   end
 
   @spec get(atom, String.t()) :: nil | String.t()
