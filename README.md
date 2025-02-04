@@ -1,6 +1,8 @@
 # MeiliSearch Elixir
 
-![Tests](https://github.com/robottokauf3/meilisearch-elixir/workflows/Tests/badge.svg)
+**This project is archived.  Check out [Meilisearch Ex](https://github.com/nutshell-lab/meilisearch-ex) for a current Meilisearch client.**
+
+---
 
 A lightweight [Meilisearch](https://docs.meilisearch.com/) client for Elixir.
 
